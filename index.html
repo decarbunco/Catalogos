@@ -230,7 +230,7 @@
             renderPage(pageNum);
         });
 
-        // Renderizar productos de la página actual con botón a TikTok
+        // Renderizar productos de la página actual con botón visible a TikTok
         function renderPageProducts(currentPage) {
             const container = document.getElementById('page-products-list');
             if (!container) return;
@@ -245,7 +245,7 @@
 
             pageProds.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'bg-brand-card border border-brand-border rounded-lg p-2.5 flex justify-between items-center gap-2';
+                card.className = 'bg-brand-card border border-brand-border rounded-lg p-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2';
                 card.innerHTML = `
                     <div class="pr-2 flex-1 min-w-0">
                         <div class="font-medium text-xs text-slate-100 truncate">${p.name}</div>
@@ -255,11 +255,11 @@
                         </div>
                     </div>
                     
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
                         ${p.tiktok ? `
-                            <a href="${p.tiktok}" target="_blank" class="bg-black hover:bg-slate-950 text-white border border-slate-700 px-2.5 py-1 rounded text-xs font-semibold transition flex items-center gap-1.5" title="Ver en TikTok">
+                            <a href="${p.tiktok}" target="_blank" class="bg-black hover:bg-slate-900 text-white border border-slate-700 px-2.5 py-1 rounded text-xs font-semibold transition flex items-center gap-1.5" title="Ver en TikTok">
                                 <i class="fab fa-tiktok text-cyan-400"></i>
-                                <span class="hidden sm:inline">Ver Video</span>
+                                <span>TikTok</span>
                             </a>
                         ` : ''}
                         
@@ -340,7 +340,6 @@
             cartCount.textContent = count;
             floatingCartCount.textContent = count;
 
-            // Animación de pulso al botón del carrito
             floatingCartBtn.classList.add('animate-pop');
             setTimeout(() => floatingCartBtn.classList.remove('animate-pop'), 300);
 
