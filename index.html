@@ -2,7 +2,7 @@
 <html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Decarbunco 3D - Catálogo & Pedidos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -24,7 +24,7 @@
         }
     </script>
 </head>
-<body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation">
 
     <!-- Header -->
     <header class="bg-brand-card border-b border-brand-border sticky top-0 z-40">
@@ -47,15 +47,27 @@
     <!-- Content Layout -->
     <div class="max-w-7xl mx-auto w-full flex-1 p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Left: PDF Viewer -->
-        <main class="lg:col-span-7 flex flex-col bg-brand-card rounded-xl border border-brand-border overflow-hidden h-[600px] lg:h-[800px]">
+        <!-- Left: PDF Viewer Section -->
+        <main class="lg:col-span-7 flex flex-col bg-brand-card rounded-xl border border-brand-border overflow-hidden">
             <div class="p-3 bg-slate-900 border-b border-brand-border flex justify-between items-center">
-                <span class="text-sm font-semibold text-slate-300"><i class="fas fa-file-pdf mr-2 text-red-400"></i>Catálogo Oficial (Acuario.pdf)</span>
-                <a href="Acuario.pdf" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition">
-                    <i class="fas fa-external-link-alt mr-1"></i> Abrir en otra pestaña
+                <span class="text-sm font-semibold text-slate-300"><i class="fas fa-file-pdf mr-2 text-red-400"></i>Catálogo Oficial</span>
+                <a href="Acuario.pdf" target="_blank" class="text-xs bg-brand-accent text-black font-semibold px-3 py-1.5 rounded transition hover:opacity-90 flex items-center gap-1">
+                    <i class="fas fa-expand"></i> Ver Completo PDF
                 </a>
             </div>
-            <iframe src="Acuario.pdf" class="w-full flex-1 border-0"></iframe>
+            
+            <!-- Contenedor adaptado para evitar desplazamiento fantasma en móviles -->
+            <div class="w-full h-[450px] lg:h-[750px] bg-slate-950 relative overflow-hidden flex flex-col items-center justify-center">
+                <object data="Acuario.pdf#toolbar=1&navpanes=0" type="application/pdf" class="w-full h-full">
+                    <div class="text-center p-6 space-y-4">
+                        <i class="fas fa-file-pdf text-5xl text-red-500"></i>
+                        <p class="text-sm text-slate-300">Tu navegador no soporta la vista previa del PDF dentro de la app.</p>
+                        <a href="Acuario.pdf" target="_blank" class="inline-block bg-brand-accent text-black font-bold px-4 py-2 rounded-lg text-sm">
+                            Abrir Catálogo PDF
+                        </a>
+                    </div>
+                </object>
+            </div>
         </main>
 
         <!-- Right: Catalog Order Grid -->
@@ -68,7 +80,7 @@
                 <input type="text" id="search-input" placeholder="Buscar producto..." class="w-full bg-slate-900 border border-brand-border text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-accent">
             </div>
 
-            <div id="product-list" class="flex-1 space-y-3 overflow-y-auto max-h-[600px] pr-1">
+            <div id="product-list" class="flex-1 space-y-3 overflow-y-auto max-h-[500px] pr-1">
                 <!-- Products dynamically inserted via JS -->
             </div>
 
@@ -124,7 +136,6 @@
             { id: 12, name: "Pegamento Especial Microbe-Lift (50ml)", category: "Especiales", price: 30.00, note: "Importado / Seguro acuático" }
         ];
 
-        // Configuración WhatsApp
         const WHATSAPP_NUMBER = "593986492294"; 
 
         let cart = {};
