@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
 <head>
-    <!-- Iconos para Pantalla de Inicio / PWA -->
-    <!-- Para iPhone / iPad (iOS) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Decarbunco 3D - Catálogo & Pedidos</title>
+
+    <!-- Iconos para Pantalla de Inicio / Acceso Directo Móvil -->
     <link rel="apple-touch-icon" sizes="180x180" href="SoloLogo.png">
-    
-    <!-- Para teléfonos Android y navegadores web -->
     <link rel="icon" type="image/png" sizes="32x32" href="SoloLogo.png">
     <link rel="icon" type="image/png" sizes="16x16" href="SoloLogo.png">
     
-    <!-- Color de la barra de direcciones en navegadores móviles (Verde Brand) -->
+    <!-- Configuración para pantalla completa y barra de navegación en teléfonos -->
     <meta name="theme-color" content="#00a884">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Decarbunco 3D">
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Decarbunco 3D - Catálogo & Pedidos</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Librería PDF.js para renderizado dinámico -->
@@ -44,11 +42,12 @@
 </head>
 <body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation">
 
-    <!-- Header -->
+    <!-- Header con Logo Personalizado -->
     <header class="bg-brand-card border-b border-brand-border sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-lg bg-brand-accent flex items-center justify-center font-bold text-black text-xl">DC</div>
+                <!-- Logo Oficial -->
+                <img src="SoloLogo.png" alt="Decarbunco 3D Logo" class="w-10 h-10 rounded-lg object-contain bg-brand-card p-0.5 border border-brand-border">
                 <div>
                     <h1 class="font-bold text-lg leading-none">Decarbunco 3D</h1>
                     <p class="text-xs text-slate-400">Diseño - Imprimo - Resuelvo</p>
@@ -103,7 +102,7 @@
             </div>
 
             <div id="product-list" class="flex-1 space-y-3 overflow-y-auto max-h-[500px] pr-1">
-                <!-- Products loaded from JSON -->
+                <!-- Los productos se cargan desde productos.json -->
             </div>
         </aside>
     </div>
