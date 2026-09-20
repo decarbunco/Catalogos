@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decarbunco 3D - Catálogo Interactivo y Pedidos</title>
-    <!-- Tailwind CSS para diseño fluido y estilizado -->
+    <title>Decarbunco 3D - Catálogo & Pedidos</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -13,173 +13,78 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#eefbfb',
-                            100: '#d5f5f6',
-                            400: '#2dd4bf',
-                            500: '#14b8a6',
-                            600: '#0d9488',
-                            800: '#115e59',
-                            900: '#134e4a',
-                            dark: '#0a0f12',
-                            panel: '#12181d',
-                            card: '#1a2228',
-                            border: '#2a363f'
+                            bg: '#0a0f12',
+                            card: '#121a1f',
+                            accent: '#00a884',
+                            border: '#1f2e35'
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Personalización de barra de desplazamiento */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0f12;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2a363f;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #0d9488;
-        }
-    </style>
 </head>
-<body class="bg-brand-dark text-slate-200 font-sans min-h-screen flex flex-col">
+<body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <header class="bg-brand-panel border-b border-brand-border sticky top-0 z-30 shadow-lg">
+    <!-- Header -->
+    <header class="bg-brand-card border-b border-brand-border sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-tr from-teal-500 to-cyan-400 p-2 rounded-lg text-brand-dark font-black text-xl shadow-md shadow-teal-500/20">
-                    3D
-                </div>
+                <div class="w-10 h-10 rounded-lg bg-brand-accent flex items-center justify-center font-bold text-black text-xl">DC</div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-wide text-white flex items-center gap-2">
-                        DECARBUNCO <span class="text-teal-400 text-xs px-2 py-0.5 rounded bg-teal-950 border border-teal-800">CATÁLOGO</span>
-                    </h1>
-                    <p class="text-xs text-slate-400">Impresión 3D & Accesorios de Acuario</p>
+                    <h1 class="font-bold text-lg leading-none">Decarbunco 3D</h1>
+                    <p class="text-xs text-slate-400">Diseño - Imprimo - Resuelvo</p>
                 </div>
             </div>
-
-            <!-- Botones de Acción Superior -->
-            <div class="flex items-center space-x-3">
-                <a href="Acuario.pdf" target="_blank" class="hidden sm:flex items-center gap-2 px-3 py-1.5 text-xs font-medium bg-brand-card hover:bg-brand-border text-teal-300 rounded-lg border border-brand-border transition">
-                    <i class="fa-solid fa-file-pdf text-red-400"></i>
-                    <span>Abrir PDF Completo</span>
-                </a>
-                
-                <!-- Botón de Carrito Flotante para Móvil/Escritorio -->
-                <button onclick="toggleCartModal()" class="relative bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-lg font-semibold text-sm transition flex items-center gap-2 shadow-lg shadow-teal-600/30">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="hidden md:inline">Mi Pedido</span>
-                    <span id="cart-badge" class="bg-white text-teal-900 text-xs font-extrabold px-2 py-0.5 rounded-full">0</span>
-                </button>
-            </div>
+            <button id="cart-toggle" class="relative bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg border border-brand-border flex items-center space-x-2 transition">
+                <i class="fas fa-shopping-cart text-brand-accent"></i>
+                <span class="font-semibold text-sm">Carrito</span>
+                <span id="cart-count" class="bg-brand-accent text-black text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            </button>
         </div>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Content Layout -->
+    <div class="max-w-7xl mx-auto w-full flex-1 p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- LADO IZQUIERDO: VISOR DE PDF -->
-        <section class="lg:col-span-6 flex flex-col bg-brand-panel border border-brand-border rounded-xl overflow-hidden shadow-xl min-h-[500px] lg:min-h-[750px]">
-            <div class="bg-brand-card px-4 py-3 border-b border-brand-border flex justify-between items-center">
-                <div class="flex items-center gap-2 text-slate-300 text-sm font-semibold">
-                    <i class="fa-solid fa-book-open text-teal-400"></i>
-                    <span>Visor de Catálogo PDF</span>
-                </div>
-                <a href="Acuario.pdf" target="_blank" class="text-xs text-teal-400 hover:underline flex items-center gap-1">
-                    <span>Pantalla completa</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+        <!-- Left: PDF Viewer -->
+        <main class="lg:col-span-7 flex flex-col bg-brand-card rounded-xl border border-brand-border overflow-hidden h-[600px] lg:h-[800px]">
+            <div class="p-3 bg-slate-900 border-b border-brand-border flex justify-between items-center">
+                <span class="text-sm font-semibold text-slate-300"><i class="fas fa-file-pdf mr-2 text-red-400"></i>Catálogo Oficial (Acuario.pdf)</span>
+                <a href="Acuario.pdf" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition">
+                    <i class="fas fa-external-link-alt mr-1"></i> Abrir en otra pestaña
                 </a>
             </div>
+            <iframe src="Acuario.pdf" class="w-full flex-1 border-0"></iframe>
+        </main>
+
+        <!-- Right: Catalog Order Grid -->
+        <aside class="lg:col-span-5 flex flex-col space-y-4">
             
-            <div class="flex-1 bg-neutral-900 relative">
-                <!-- Contenedor del PDF -->
-                <iframe src="Acuario.pdf#toolbar=1" class="w-full h-full min-h-[500px] border-0" title="Catálogo PDF">
-                    <p class="p-6 text-center text-slate-400">
-                        Tu navegador no soporta la visualización de PDF incrustados. 
-                        <a href="Acuario.pdf" class="text-teal-400 underline">Haz clic aquí para descargar el catálogo PDF</a>.
-                    </p>
-                </iframe>
-            </div>
-        </section>
-
-        <!-- LADO DERECHO: SECCIÓN DE PEDIDO Y PRODUCTOS -->
-        <section class="lg:col-span-6 flex flex-col space-y-4">
-            
-            <!-- Barra de Búsqueda y Filtros -->
-            <div class="bg-brand-panel p-4 rounded-xl border border-brand-border space-y-3 shadow-md">
-                <div class="relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Buscar producto en el catálogo..." 
-                        class="w-full bg-brand-dark border border-brand-border rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500 transition">
-                </div>
-
-                <div class="flex gap-2 overflow-x-auto pb-1 text-xs">
-                    <button onclick="setCategory('todos')" class="cat-btn active px-3 py-1.5 rounded-lg border border-teal-500 bg-teal-500/10 text-teal-300 font-medium whitespace-nowrap transition">
-                        Todos
-                    </button>
-                    <button onclick="setCategory('acuario')" class="cat-btn px-3 py-1.5 rounded-lg border border-brand-border bg-brand-card text-slate-400 hover:border-slate-500 font-medium whitespace-nowrap transition">
-                        🐠 Acuarios
-                    </button>
-                    <button onclick="setCategory('decoracion')" class="cat-btn px-3 py-1.5 rounded-lg border border-brand-border bg-brand-card text-slate-400 hover:border-slate-500 font-medium whitespace-nowrap transition">
-                        🎨 Decoración
-                    </button>
-                    <button onclick="setCategory('hogar')" class="cat-btn px-3 py-1.5 rounded-lg border border-brand-border bg-brand-card text-slate-400 hover:border-slate-500 font-medium whitespace-nowrap transition">
-                        🏠 Hogar
-                    </button>
-                </div>
+            <div class="bg-brand-card p-4 rounded-xl border border-brand-border">
+                <h2 class="font-bold text-base mb-2">Realizar Pedido</h2>
+                <p class="text-xs text-slate-400 mb-4">Selecciona los productos que viste en el PDF para agregarlos a tu carrito de compras.</p>
+                
+                <input type="text" id="search-input" placeholder="Buscar producto..." class="w-full bg-slate-900 border border-brand-border text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-accent">
             </div>
 
-            <div class="flex-1 bg-brand-panel p-4 rounded-xl border border-brand-border shadow-md flex flex-col">
-                <h2 class="text-sm font-bold text-slate-300 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-cubes text-teal-400"></i>
-                    <span>Productos Disponibles</span>
-                </h2>
-
-                <div id="product-list" class="space-y-3 overflow-y-auto max-h-[500px] pr-1 flex-1">
-                    <!-- Los productos se cargarán dinámicamente mediante JS -->
-                </div>
+            <div id="product-list" class="flex-1 space-y-3 overflow-y-auto max-h-[600px] pr-1">
+                <!-- Products dynamically inserted via JS -->
             </div>
 
-            <!-- Resumen Rápido e Iniciar Pedido -->
-            <div class="bg-brand-panel p-4 rounded-xl border border-brand-border shadow-md flex items-center justify-between">
-                <div>
-                    <span class="text-xs text-slate-400 block">Total Estimado</span>
-                    <span id="quick-total" class="text-xl font-extrabold text-teal-400">$0.00</span>
-                </div>
-                <button onclick="openCartModal()" class="bg-teal-600 hover:bg-teal-500 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition flex items-center gap-2 shadow-lg shadow-teal-600/30">
-                    <span>Revisar y Enviar Pedido</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
+        </aside>
+    </div>
+
+    <!-- Cart Sidebar Modal -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex justify-end">
+        <div class="w-full max-w-md bg-brand-card h-full flex flex-col border-l border-brand-border">
+            <div class="p-4 border-b border-brand-border flex justify-between items-center">
+                <h3 class="font-bold text-lg flex items-center gap-2"><i class="fas fa-shopping-bag text-brand-accent"></i> Tu Carrito</h3>
+                <button id="cart-close" class="text-slate-400 hover:text-white text-xl"><i class="fas fa-times"></i></button>
             </div>
 
-        </section>
-
-    </main>
-
-    <div id="cart-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex justify-end opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-brand-panel w-full max-w-md h-full shadow-2xl border-l border-brand-border flex flex-col transform translate-x-full transition-transform duration-300" id="cart-drawer">
-            
-            <!-- Encabezado del Carrito -->
-            <div class="p-4 bg-brand-card border-b border-brand-border flex justify-between items-center">
-                <div class="flex items-center gap-2 text-white font-bold">
-                    <i class="fa-solid fa-cart-shopping text-teal-400"></i>
-                    <span>Tu Pedido Decarbunco 3D</span>
-                </div>
-                <button onclick="closeCartModal()" class="text-slate-400 hover:text-white p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <!-- Lista de items en el carrito -->
-            <div class="flex-1 overflow-y-auto p-4 space-y-3" id="cart-items-container">
-                <!-- Se generará mediante JS -->
+            <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <!-- Cart items inserted via JS -->
             </div>
 
             <div class="p-4 bg-brand-card border-t border-brand-border space-y-4">
@@ -190,262 +95,157 @@
                     </div>
                 </div>
 
-                <!-- Datos del cliente -->
-                <form id="order-form" onsubmit="sendWhatsAppOrder(event)" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Nombre Completo *</label>
-                        <input type="text" id="client-name" required placeholder="Ej. Juan Pérez" 
-                            class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Ciudad / Dirección de Entrega *</label>
-                        <input type="text" id="client-address" required placeholder="Ej. Quito, Av. Amazonas y..." 
-                            class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Notas o colores requeridos (Opcional)</label>
-                        <textarea id="client-notes" rows="2" placeholder="Ej. Color negro brillante, entrega por Servientrega..." 
-                            class="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 resize-none"></textarea>
-                    </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-slate-300">Nombre del Cliente:</label>
+                    <input type="text" id="client-name" placeholder="Tu nombre..." class="w-full bg-slate-900 border border-brand-border text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-accent">
+                </div>
 
-                    <!-- Configurar número de WhatsApp comercial -->
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30">
-                        <i class="fa-brands fa-whatsapp text-xl"></i>
-                        <span>Enviar Pedido por WhatsApp</span>
-                    </button>
-                </form>
+                <button id="btn-whatsapp" class="w-full bg-brand-accent hover:opacity-90 text-black font-bold py-3 rounded-lg flex items-center justify-center space-x-2 transition">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                    <span>Enviar Pedido por WhatsApp</span>
+                </button>
             </div>
-
         </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN COMERCIAL
-        const WHATSAPP_NUMBER = "593986492294"; // Reemplaza con tu número de WhatsApp con código de país (ej. 593...)
-
-        // BASE DE DATOS DE PRODUCTOS (Puedes agregar o cambiar precios según tu PDF)
-        const products = [
-            { id: 1, name: "AquaPod 3D - Maceta Ventosa", category: "acuario", price: 4.50, desc: "Maceta con ventosa para plantas acuáticas en cristal." },
-            { id: 2, name: "Cueva Ciclidos / Peces 3D", category: "acuario", price: 6.00, desc: "Refugio orgánico impreso en PLA inocuo." },
-            { id: 3, name: "Soporte de Tubos y Mangueras", category: "acuario", price: 3.00, desc: "Sujetador para mantenimiento de acuario." },
-            { id: 4, name: "Alimentador Flotante Pez", category: "acuario", price: 2.50, desc: "Anillo flotante para concentrar la comida." },
-            { id: 5, name: "Soporte para Celular Geometric", category: "hogar", price: 3.50, desc: "Base de escritorio moderna y minimalista." },
-            { id: 6, name: "Organizador de Cables Clip", category: "hogar", price: 2.00, desc: "Set de clips adhesivos impresos." },
-            { id: 7, name: "Maceta Geométrica Nórdica", category: "decoracion", price: 5.50, desc: "Diseño facetado para suculentas." },
-            { id: 8, name: "Soporte Auriculares de Mesa", category: "hogar", price: 8.00, desc: "Soporte resistente para headphones." }
+        const PRODUCTS = [
+            { id: 1, name: "Calavera Cinética", category: "Decoración", price: 7.80, note: "Min. 3 unid: $6.70" },
+            { id: 2, name: "Vaquero Calavera Chibi", category: "Decoración", price: 7.80, note: "Min. 3 unid: $6.70" },
+            { id: 3, name: "Cartel Sumergible Personalizable", category: "Decoración", price: 0.65, note: "Min. 3 unid: $0.55" },
+            { id: 4, name: "Calavera Bailarina", category: "Decoración", price: 3.70, note: "Min. 3 unid: $3.20" },
+            { id: 5, name: "Calavera Bailarina Temática", category: "Decoración", price: 4.25, note: "Min. 3 unid: $3.55" },
+            { id: 6, name: "Repuesto de Codo de Filtro", category: "Accesorios", price: 0.55, note: "Min. 3 unid: $0.45" },
+            { id: 7, name: "Esquineros 3-4mm Tapa Cristal (Set 6 piezas)", category: "Accesorios", price: 1.60, note: "Min. 3 unid: $1.35" },
+            { id: 8, name: "Esquineros 6mm Tapa Cristal (Set 6 piezas)", category: "Accesorios", price: 3.80, note: "Min. 3 unid: $3.20" },
+            { id: 9, name: "Esquineros 10mm Tapa Cristal (Set 6 piezas)", category: "Accesorios", price: 4.60, note: "Min. 3 unid: $3.90" },
+            { id: 10, name: "Soporte BambúZen", category: "Accesorios", price: 2.75, note: "Min. 3 unid: $2.35" },
+            { id: 11, name: "Mini Maceta Flotante para Acuario", category: "Accesorios", price: 0.90, note: "Min. 3 unid: $0.70" },
+            { id: 12, name: "Pegamento Especial Microbe-Lift (50ml)", category: "Especiales", price: 30.00, note: "Importado / Seguro acuático" }
         ];
 
+        // Configuración WhatsApp
+        const WHATSAPP_NUMBER = "593986492294"; 
+
         let cart = {};
-        let currentCategory = 'todos';
 
-        // Inicialización
-        window.onload = function() {
-            renderProducts();
-            updateCartUI();
-        };
-
-        // Renderizar lista de productos
-        function renderProducts() {
-            const container = document.getElementById('product-list');
-            const search = document.getElementById('search-input').value.toLowerCase();
-            container.innerHTML = '';
-
-            const filtered = products.filter(p => {
-                const matchesCat = currentCategory === 'todos' || p.category === currentCategory;
-                const matchesSearch = p.name.toLowerCase().includes(search) || p.desc.toLowerCase().includes(search);
-                return matchesCat && matchesSearch;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8 text-slate-500 text-xs">
-                        <i class="fa-solid fa-box-open text-2xl mb-2"></i>
-                        <p>No se encontraron productos en esta categoría.</p>
-                    </div>
-                `;
-                return;
-            }
-
+        function renderProducts(filter = '') {
+            const list = document.getElementById('product-list');
+            list.innerHTML = '';
+            
+            const filtered = PRODUCTS.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
+            
             filtered.forEach(p => {
-                const qty = cart[p.id] ? cart[p.id].qty : 0;
-                const itemEl = document.createElement('div');
-                itemEl.className = "bg-brand-card p-3 rounded-lg border border-brand-border flex items-center justify-between hover:border-teal-500/50 transition";
-                itemEl.innerHTML = `
-                    <div class="flex-1 pr-3">
-                        <h3 class="text-xs font-bold text-white mb-0.5">${p.name}</h3>
-                        <p class="text-[11px] text-slate-400 leading-tight mb-1">${p.desc}</p>
-                        <span class="text-xs font-semibold text-teal-400">$${p.price.toFixed(2)}</span>
+                const item = document.createElement('div');
+                item.className = 'bg-brand-card border border-brand-border rounded-lg p-3 flex justify-between items-center';
+                item.innerHTML = `
+                    <div class="pr-2">
+                        <div class="text-xs text-brand-accent font-semibold">${p.category}</div>
+                        <div class="font-medium text-sm text-slate-100">${p.name}</div>
+                        <div class="text-xs text-slate-400">$${p.price.toFixed(2)} <span class="text-[10px] text-slate-500">(${p.note})</span></div>
                     </div>
-
-                    <div class="flex items-center space-x-2">
-                        ${qty > 0 ? `
-                            <div class="flex items-center bg-brand-dark rounded-lg border border-brand-border">
-                                <button onclick="changeQty(${p.id}, -1)" class="px-2 py-1 text-xs text-slate-300 hover:text-white">-</button>
-                                <span class="px-2 text-xs font-bold text-teal-300">${qty}</span>
-                                <button onclick="changeQty(${p.id}, 1)" class="px-2 py-1 text-xs text-slate-300 hover:text-white">+</button>
-                            </div>
-                        ` : `
-                            <button onclick="changeQty(${p.id}, 1)" class="bg-brand-dark hover:bg-teal-600 border border-brand-border hover:border-teal-500 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1">
-                                <i class="fa-solid fa-plus text-[10px]"></i>
-                                <span>Agregar</span>
-                            </button>
-                        `}
-                    </div>
+                    <button onclick="addToCart(${p.id})" class="bg-slate-800 hover:bg-brand-accent hover:text-black border border-brand-border text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                        + Añadir
+                    </button>
                 `;
-                container.appendChild(itemEl);
+                list.appendChild(item);
             });
         }
 
-        // Modificar cantidad
-        function changeQty(productId, change) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
+        function addToCart(id) {
+            cart[id] = (cart[id] || 0) + 1;
+            updateCart();
+        }
 
-            if (!cart[productId]) {
-                cart[productId] = { ...product, qty: 0 };
+        function changeQty(id, delta) {
+            if (cart[id]) {
+                cart[id] += delta;
+                if (cart[id] <= 0) delete cart[id];
             }
-
-            cart[productId].qty += change;
-
-            if (cart[productId].qty <= 0) {
-                delete cart[productId];
-            }
-
-            renderProducts();
-            updateCartUI();
+            updateCart();
         }
 
-        // Filtrado por categoría
-        function setCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('border-teal-500', 'bg-teal-500/10', 'text-teal-300');
-                btn.classList.add('border-brand-border', 'bg-brand-card', 'text-slate-400');
-            });
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartSubtotal = document.getElementById('cart-subtotal');
+            
+            cartItems.innerHTML = '';
+            let total = 0;
+            let count = 0;
 
-            event.target.classList.remove('border-brand-border', 'bg-brand-card', 'text-slate-400');
-            event.target.classList.add('border-teal-500', 'bg-teal-500/10', 'text-teal-300');
+            Object.keys(cart).forEach(id => {
+                const p = PRODUCTS.find(prod => prod.id == id);
+                const qty = cart[id];
+                const sub = p.price * qty;
+                total += sub;
+                count += qty;
 
-            renderProducts();
-        }
-
-        function filterProducts() {
-            renderProducts();
-        }
-
-        // Actualizar interfaz del carrito
-        function updateCartUI() {
-            const cartContainer = document.getElementById('cart-items-container');
-            const cartBadge = document.getElementById('cart-badge');
-            const quickTotal = document.getElementById('quick-total');
-            const subtotalEl = document.getElementById('cart-subtotal');
-
-            cartContainer.innerHTML = '';
-            let totalItems = 0;
-            let totalPrice = 0;
-
-            Object.values(cart).forEach(item => {
-                totalItems += item.qty;
-                const itemTotal = item.qty * item.price;
-                totalPrice += itemTotal;
-
-                const cartItem = document.createElement('div');
-                cartItem.className = "bg-brand-dark p-3 rounded-lg border border-brand-border flex items-center justify-between";
-                cartItem.innerHTML = `
+                const row = document.createElement('div');
+                row.className = 'bg-slate-900 border border-brand-border rounded-lg p-3 flex justify-between items-center';
+                row.innerHTML = `
                     <div>
-                        <h4 class="text-xs font-bold text-white">${item.name}</h4>
-                        <span class="text-[11px] text-slate-400">$${item.price.toFixed(2)} x ${item.qty}</span>
+                        <div class="font-medium text-sm text-slate-100">${p.name}</div>
+                        <div class="text-xs text-slate-400">$${p.price.toFixed(2)} x ${qty} = $${sub.toFixed(2)}</div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-bold text-teal-400">$${itemTotal.toFixed(2)}</span>
-                        <button onclick="changeQty(${item.id}, -${item.qty})" class="text-red-400 hover:text-red-300 text-xs">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="changeQty(${p.id}, -1)" class="w-6 h-6 bg-slate-800 text-slate-300 rounded hover:bg-slate-700 flex items-center justify-center font-bold text-sm">-</button>
+                        <span class="text-sm font-semibold">${qty}</span>
+                        <button onclick="changeQty(${p.id}, 1)" class="w-6 h-6 bg-slate-800 text-slate-300 rounded hover:bg-slate-700 flex items-center justify-center font-bold text-sm">+</button>
                     </div>
                 `;
-                cartContainer.appendChild(cartItem);
+                cartItems.appendChild(row);
             });
 
-            if (totalItems === 0) {
-                cartContainer.innerHTML = `
-                    <div class="text-center py-12 text-slate-500">
-                        <i class="fa-solid fa-basket-shopping text-3xl mb-2"></i>
-                        <p class="text-xs">Tu pedido está vacío.</p>
-                        <p class="text-[11px] text-slate-600 mt-1">Agrega productos del catálogo para comenzar.</p>
-                    </div>
-                `;
+            if (count === 0) {
+                cartItems.innerHTML = '<p class="text-center text-slate-500 text-sm py-8">El carrito está vacío</p>';
             }
 
-            cartBadge.innerText = totalItems;
-            quickTotal.innerText = `$${totalPrice.toFixed(2)}`;
-            subtotalEl.innerText = `$${totalPrice.toFixed(2)}`;
+            cartCount.textContent = count;
+            cartSubtotal.textContent = `$${total.toFixed(2)}`;
         }
 
-        // Control del Modal
-        function openCartModal() {
-            const modal = document.getElementById('cart-modal');
-            const drawer = document.getElementById('cart-drawer');
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            drawer.classList.remove('translate-x-full');
-        }
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            renderProducts(e.target.value);
+        });
 
-        function closeCartModal() {
-            const modal = document.getElementById('cart-modal');
-            const drawer = document.getElementById('cart-drawer');
-            modal.classList.add('opacity-0', 'pointer-events-none');
-            drawer.classList.add('translate-x-full');
-        }
+        document.getElementById('cart-toggle').addEventListener('click', () => {
+            document.getElementById('cart-modal').classList.remove('hidden');
+        });
 
-        function toggleCartModal() {
-            const modal = document.getElementById('cart-modal');
-            if (modal.classList.contains('opacity-0')) {
-                openCartModal();
-            } else {
-                closeCartModal();
-            }
-        }
+        document.getElementById('cart-close').addEventListener('click', () => {
+            document.getElementById('cart-modal').classList.add('hidden');
+        });
 
-        // Generar y enviar mensaje formateado a WhatsApp
-        function sendWhatsAppOrder(event) {
-            event.preventDefault();
-
-            const items = Object.values(cart);
-            if (items.length === 0) {
-                alert("Por favor agrega al menos un producto a tu pedido.");
+        document.getElementById('btn-whatsapp').addEventListener('click', () => {
+            const name = document.getElementById('client-name').value.trim();
+            if (Object.keys(cart).length === 0) {
+                alert('El carrito está vacío.');
                 return;
             }
 
-            const name = document.getElementById('client-name').value;
-            const address = document.getElementById('client-address').value;
-            const notes = document.getElementById('client-notes').value;
+            let msg = `*Nuevo Pedido - Decarbunco 3D*\n`;
+            if (name) msg += `*Cliente:* ${name}\n`;
+            msg += `-----------------------------------\n`;
 
             let total = 0;
-            let message = `*¡HOLA DECARBUNCO 3D!* 🛠️✨\n`;
-            message += `Quiero realizar el siguiente pedido:\n\n`;
-            message += `--------------------------------\n`;
-
-            items.forEach((item, index) => {
-                const sub = item.qty * item.price;
+            Object.keys(cart).forEach(id => {
+                const p = PRODUCTS.find(prod => prod.id == id);
+                const qty = cart[id];
+                const sub = p.price * qty;
                 total += sub;
-                message += `${index + 1}. *${item.name}*\n   Cant: ${item.qty} | Subtotal: $${sub.toFixed(2)}\n`;
+                msg += `• ${qty}x ${p.name} - $${sub.toFixed(2)}\n`;
             });
 
-            message += `--------------------------------\n`;
-            message += `💰 *TOTAL ESTIMADO: $${total.toFixed(2)}*\n\n`;
-            message += `📌 *DATOS DE ENTREGA:*\n`;
-            message += `👤 *Cliente:* ${name}\n`;
-            message += `📍 *Ubicación:* ${address}\n`;
-            if (notes.trim() !== '') {
-                message += `📝 *Notas:* ${notes}\n`;
-            }
+            msg += `-----------------------------------\n`;
+            msg += `*Total estimado:* $${total.toFixed(2)}\n\n`;
+            msg += `_Nota: Precios no incluyen IVA._`;
 
-            message += `\nQuedo a la espera de la confirmación para el pago. ¡Gracias!`;
+            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        });
 
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-
-            window.open(whatsappURL, '_blank');
-        }
+        renderProducts();
     </script>
 </body>
 </html>
