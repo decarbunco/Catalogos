@@ -39,8 +39,18 @@
             }
         }
     </script>
+    <style>
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: pop 0.3s ease-in-out;
+        }
+    </style>
 </head>
-<body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation">
+<body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation pb-20 lg:pb-0">
 
     <!-- Header con Logo Personalizado -->
     <header class="bg-brand-card border-b border-brand-border sticky top-0 z-40">
@@ -91,7 +101,7 @@
                     </button>
                 </div>
 
-                <!-- SECCIÓN NUEVA: Productos vinculados dinámicamente a la página actual -->
+                <!-- Productos vinculados a la página actual -->
                 <div class="bg-slate-900 border border-brand-border p-3 rounded-lg space-y-2">
                     <div class="flex items-center justify-between border-b border-brand-border/50 pb-2">
                         <span class="text-xs font-bold text-brand-accent uppercase tracking-wider flex items-center gap-1.5">
@@ -99,9 +109,7 @@
                         </span>
                         <span class="text-[11px] text-slate-400">⚡ Descuento automático (≥3 unid.)</span>
                     </div>
-                    <div id="page-products-list" class="space-y-2">
-                        <!-- Se insertan aquí dinámicamente al pasar de página -->
-                    </div>
+                    <div id="page-products-list" class="space-y-2"></div>
                 </div>
             </div>
         </main>
@@ -115,10 +123,28 @@
                 <input type="text" id="search-input" placeholder="Buscar producto por nombre..." class="w-full bg-slate-900 border border-brand-border text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-accent">
             </div>
 
-            <div id="product-list" class="flex-1 space-y-3 overflow-y-auto max-h-[500px] pr-1">
-                <!-- Se cargan todos los productos desde productos.json -->
-            </div>
+            <div id="product-list" class="flex-1 space-y-3 overflow-y-auto max-h-[500px] pr-1"></div>
         </aside>
+    </div>
+
+    <!-- BOTÓN FLOTANTE INFERIOR DEL CARRITO (Visibilidad asegurada en móviles) -->
+    <div class="fixed bottom-4 right-4 z-40">
+        <button id="floating-cart-btn" class="bg-brand-accent text-black font-bold p-3.5 rounded-full shadow-2xl border-2 border-slate-900 flex items-center justify-center space-x-2 transition-transform active:scale-95 hover:scale-105">
+            <div class="relative">
+                <i class="fas fa-shopping-cart text-xl"></i>
+                <span id="floating-cart-count" class="absolute -top-3 -right-3 bg-red-600 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-black">0</span>
+            </div>
+            <span class="text-xs font-extrabold pr-1 hidden sm:inline">Ver Pedido</span>
+        </button>
+    </div>
+
+    <!-- NOTIFICACIÓN RÁPIDA (TOAST) AL AÑADIR UN PRODUCTO -->
+    <div id="cart-toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 border border-brand-accent text-white px-4 py-2.5 rounded-full shadow-2xl z-50 hidden flex items-center gap-3 transition-all duration-300">
+        <i class="fas fa-check-circle text-brand-accent text-lg"></i>
+        <span class="text-xs font-medium">¡Producto agregado al carrito!</span>
+        <button id="toast-open-cart" class="bg-brand-accent text-black text-xs font-bold px-2.5 py-1 rounded-full hover:opacity-90">
+            Ver Carrito
+        </button>
     </div>
 
     <!-- Cart Modal -->
@@ -154,6 +180,7 @@
         const WHATSAPP_NUMBER = "593986492294"; 
         let PRODUCTS = [];
         let cart = {};
+        let toastTimeout;
 
         // Cargar productos desde productos.json
         async function loadProducts() {
@@ -191,8 +218,6 @@
                 });
             });
             document.getElementById('page-num').textContent = `Página ${num} de ${pdfDoc.numPages}`;
-            
-            // Actualiza los productos mostrados debajo del PDF según la página actual
             renderPageProducts(num);
         }
 
@@ -219,7 +244,7 @@
             renderPage(pageNum);
         });
 
-        // Renderizar productos que pertenecen exclusivamente a la página actual del PDF
+        // Renderizar productos de la página actual
         function renderPageProducts(currentPage) {
             const container = document.getElementById('page-products-list');
             if (!container) return;
@@ -251,7 +276,7 @@
             });
         }
 
-        // Renderizar catálogo completo (barra lateral)
+        // Renderizar todos los productos
         function renderProducts(filter = '') {
             const list = document.getElementById('product-list');
             list.innerHTML = '';
@@ -281,6 +306,7 @@
         function addToCart(id) {
             cart[id] = (cart[id] || 0) + 1;
             updateCart();
+            showToast();
         }
 
         function changeQty(id, delta) {
@@ -291,9 +317,21 @@
             updateCart();
         }
 
+        function showToast() {
+            const toast = document.getElementById('cart-toast');
+            toast.classList.remove('hidden');
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+
         function updateCart() {
             const cartItems = document.getElementById('cart-items');
             const cartCount = document.getElementById('cart-count');
+            const floatingCartCount = document.getElementById('floating-cart-count');
+            const floatingCartBtn = document.getElementById('floating-cart-btn');
             const cartSubtotal = document.getElementById('cart-subtotal');
             
             cartItems.innerHTML = '';
@@ -331,12 +369,23 @@
             if (count === 0) cartItems.innerHTML = '<p class="text-center text-slate-500 text-sm py-8">El carrito está vacío</p>';
 
             cartCount.textContent = count;
+            floatingCartCount.textContent = count;
+
+            // Animación de impulso al icono flotante
+            floatingCartBtn.classList.add('animate-pop');
+            setTimeout(() => floatingCartBtn.classList.remove('animate-pop'), 300);
+
             cartSubtotal.textContent = `$${total.toFixed(2)}`;
         }
 
-        document.getElementById('search-input').addEventListener('input', (e) => renderProducts(e.target.value));
-        document.getElementById('cart-toggle').addEventListener('click', () => document.getElementById('cart-modal').classList.remove('hidden'));
+        // Eventos de apertura de Carrito
+        const openModal = () => document.getElementById('cart-modal').classList.remove('hidden');
+        document.getElementById('cart-toggle').addEventListener('click', openModal);
+        document.getElementById('floating-cart-btn').addEventListener('click', openModal);
+        document.getElementById('toast-open-cart').addEventListener('click', openModal);
+        
         document.getElementById('cart-close').addEventListener('click', () => document.getElementById('cart-modal').classList.add('hidden'));
+        document.getElementById('search-input').addEventListener('input', (e) => renderProducts(e.target.value));
 
         document.getElementById('btn-whatsapp').addEventListener('click', () => {
             const name = document.getElementById('client-name').value.trim();
