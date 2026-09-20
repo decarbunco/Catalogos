@@ -50,7 +50,7 @@
         }
     </style>
 </head>
-<body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation pb-20 lg:pb-0">
+<body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation pb-10">
 
     <!-- Header con Logo Personalizado -->
     <header class="bg-brand-card border-b border-brand-border sticky top-0 z-40">
@@ -127,19 +127,18 @@
         </aside>
     </div>
 
-    <!-- BOTÓN FLOTANTE INFERIOR DEL CARRITO (Visibilidad asegurada en móviles) -->
-    <div class="fixed bottom-4 right-4 z-40">
-        <button id="floating-cart-btn" class="bg-brand-accent text-black font-bold p-3.5 rounded-full shadow-2xl border-2 border-slate-900 flex items-center justify-center space-x-2 transition-transform active:scale-95 hover:scale-105">
+    <!-- BOTÓN FLOTANTE DEL CARRITO (Ubicado en el centro-derecho vertical) -->
+    <div class="fixed top-1/2 -translate-y-1/2 right-4 z-40">
+        <button id="floating-cart-btn" class="bg-brand-accent text-black font-bold p-3.5 rounded-full shadow-2xl border-2 border-slate-900 flex items-center justify-center transition-transform active:scale-95 hover:scale-105">
             <div class="relative">
                 <i class="fas fa-shopping-cart text-xl"></i>
                 <span id="floating-cart-count" class="absolute -top-3 -right-3 bg-red-600 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-black">0</span>
             </div>
-            <span class="text-xs font-extrabold pr-1 hidden sm:inline">Ver Pedido</span>
         </button>
     </div>
 
-    <!-- NOTIFICACIÓN RÁPIDA (TOAST) AL AÑADIR UN PRODUCTO -->
-    <div id="cart-toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 border border-brand-accent text-white px-4 py-2.5 rounded-full shadow-2xl z-50 hidden flex items-center gap-3 transition-all duration-300">
+    <!-- NOTIFICACIÓN RÁPIDA (TOAST) AL AÑADIR UN PRODUCTO (Ubicada más arriba) -->
+    <div id="cart-toast" class="fixed bottom-28 sm:bottom-32 left-1/2 -translate-x-1/2 bg-slate-900 border border-brand-accent text-white px-4 py-2.5 rounded-full shadow-2xl z-50 hidden flex items-center gap-3 transition-all duration-300">
         <i class="fas fa-check-circle text-brand-accent text-lg"></i>
         <span class="text-xs font-medium">¡Producto agregado al carrito!</span>
         <button id="toast-open-cart" class="bg-brand-accent text-black text-xs font-bold px-2.5 py-1 rounded-full hover:opacity-90">
@@ -371,7 +370,7 @@
             cartCount.textContent = count;
             floatingCartCount.textContent = count;
 
-            // Animación de impulso al icono flotante
+            // Animación de pulso al botón del carrito
             floatingCartBtn.classList.add('animate-pop');
             setTimeout(() => floatingCartBtn.classList.remove('animate-pop'), 300);
 
