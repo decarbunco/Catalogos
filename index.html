@@ -158,13 +158,13 @@
                     <input type="text" id="client-name" placeholder="Ej: Plantas Acuáticas / Juan Pérez" class="w-full bg-slate-900 border border-brand-border text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-accent">
                 </div>
 
-                <!-- Botón Generar Proforma PDF -->
+                <!-- Botón Generar Proforma PDF + Envío por WhatsApp -->
                 <button id="btn-download-proforma" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold py-2.5 rounded-lg border border-brand-border flex items-center justify-center space-x-2 transition text-sm">
                     <i class="fas fa-file-pdf text-red-400"></i>
                     <span>Descargar Proforma (PDF)</span>
                 </button>
 
-                <!-- Botón Enviar WhatsApp -->
+                <!-- Botón Enviar Pedido Directo por WhatsApp -->
                 <button id="btn-whatsapp" class="w-full bg-brand-accent hover:opacity-90 text-black font-bold py-3 rounded-lg flex items-center justify-center space-x-2 transition">
                     <i class="fab fa-whatsapp text-lg"></i>
                     <span>Enviar Pedido por WhatsApp</span>
@@ -173,7 +173,7 @@
         </div>
     </div>
 
-    <!-- PLANTILLA PROFORMA PDF SIN REDUNDANCIA DE NOMBRE -->
+    <!-- PLANTILLA PROFORMA PDF -->
     <div class="hidden">
         <div id="proforma-template" class="bg-white text-black font-sans text-xs p-6" style="width: 700px; min-height: 950px; box-sizing: border-box; display: block; margin: 0; padding-top: 15px;">
             
@@ -234,13 +234,11 @@
                 <p class="mb-0">• <strong>Tiempo de entrega estimado:</strong> 3 a 7 días hábiles según volumen desde la confirmación del anticipo.</p>
             </div>
 
-            <!-- Firma Electrónica Limpia y Optimizada -->
+            <!-- Firma Electrónica -->
             <div class="mt-8 flex flex-col items-center justify-center">
-                <!-- Imagen de Firma Electrónica que ya contiene el nombre oficial -->
                 <div class="mb-1">
                     <img src="FIRMA ELECTRONICA.png" alt="Firma Electrónica Diego Cuyago" class="h-12 object-contain mx-auto">
                 </div>
-                <!-- Línea de firma sin redundancia -->
                 <div class="border-t border-gray-400 w-1/2 pt-1 text-center">
                     <p class="font-bold text-gray-800 text-xs tracking-wider">DECARBUNCO 3D</p>
                     <p class="text-[9px] text-gray-500">Servicios e Impresión 3D</p>
@@ -440,7 +438,7 @@
         
         document.getElementById('cart-close').addEventListener('click', () => document.getElementById('cart-modal').classList.add('hidden'));
 
-        // LÓGICA GENERACIÓN DE PROFORMA PDF
+        // GENERACIÓN DE PROFORMA PDF + MENSAJE COMPLETO DE PEDIDO POR WHATSAPP
         document.getElementById('btn-download-proforma').addEventListener('click', () => {
             if (Object.keys(cart).length === 0) {
                 alert('El carrito está vacío. Agrega productos para generar la proforma.');
@@ -464,6 +462,7 @@
             tableBody.innerHTML = '';
             
             let subtotal = 0;
+            let itemsTextForWA = "";
 
             Object.keys(cart).forEach(id => {
                 const p = PRODUCTS.find(prod => prod.id == id);
@@ -472,6 +471,8 @@
                 const activePrice = isWholesale ? p.wholesalePrice : p.price;
                 const itemSubtotal = activePrice * qty;
                 subtotal += itemSubtotal;
+
+                itemsTextForWA += `• ${qty}x ${p.name} - $${itemSubtotal.toFixed(2)}${isWholesale ? ' *(Mayorista)*' : ''}\n`;
 
                 const tr = document.createElement('tr');
                 tr.className = 'text-[10px]';
@@ -502,12 +503,27 @@
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
+            // 1. Guarda el PDF en el teléfono/PC del cliente
+            // 2. Abre inmediatamente el chat de WhatsApp con la lista detallada
             html2pdf().set(opt).from(element).save().then(() => {
                 localStorage.setItem('decarbunco_proforma_num', proformaCount + 1);
+
+                let notifyMsg = `*PROFORMA N° ${formattedProformaNum} GENERADA*\n`;
+                if (clientName) notifyMsg += `*Cliente:* ${clientName}\n`;
+                notifyMsg += `-----------------------------------\n`;
+                notifyMsg += itemsTextForWA;
+                notifyMsg += `-----------------------------------\n`;
+                notifyMsg += `*Subtotal:* $${subtotal.toFixed(2)}\n`;
+                notifyMsg += `*IVA (15%):* $${iva.toFixed(2)}\n`;
+                notifyMsg += `*TOTAL:* $${total.toFixed(2)}\n\n`;
+                notifyMsg += `_Hola Decarbunco 3D, acabo de descargar mi proforma en PDF. ¿Me confirmas para coordinar el pago del 50% de anticipo?_`;
+
+                const notifyUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(notifyMsg)}`;
+                window.open(notifyUrl, '_blank');
             });
         });
 
-        // Enviar por WhatsApp con cálculo de IVA integrado
+        // Enviar por WhatsApp estándar
         document.getElementById('btn-whatsapp').addEventListener('click', () => {
             const name = document.getElementById('client-name').value.trim();
             if (Object.keys(cart).length === 0) {
