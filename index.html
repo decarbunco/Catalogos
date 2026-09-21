@@ -252,7 +252,6 @@
         let PRODUCTS = [];
         let cart = {};
         let toastTimeout;
-        let lastNotifyUrl = "";
 
         // Cargar productos desde productos.json
         async function loadProducts() {
@@ -387,14 +386,7 @@
             const floatingCartCount = document.getElementById('floating-cart-count');
             const floatingCartBtn = document.getElementById('floating-cart-btn');
             const cartSubtotal = document.getElementById('cart-subtotal');
-            const btnProformaText = document.getElementById('btn-proforma-text');
             
-            // Restablecer botón de proforma si cambia el carrito
-            if (btnProformaText) {
-                btnProformaText.textContent = "Descargar Proforma (PDF)";
-                lastNotifyUrl = "";
-            }
-
             cartItems.innerHTML = '';
             let total = 0, count = 0;
 
@@ -446,16 +438,10 @@
         
         document.getElementById('cart-close').addEventListener('click', () => document.getElementById('cart-modal').classList.add('hidden'));
 
-        // GENERACIÓN DE PROFORMA PDF Y AVISO DE WHATSAPP COMPATIBLE CON MÓVILES
+        // DESCARGA LIMPIA DE PROFORMA PDF (SIN REDIRECCIONES AUTOMÁTICAS)
         document.getElementById('btn-download-proforma').addEventListener('click', () => {
             if (Object.keys(cart).length === 0) {
                 alert('El carrito está vacío. Agrega productos para generar la proforma.');
-                return;
-            }
-
-            // Si ya se generó la proforma y está lista la notificación de WhatsApp
-            if (lastNotifyUrl !== "") {
-                window.location.href = lastNotifyUrl;
                 return;
             }
 
@@ -476,7 +462,6 @@
             tableBody.innerHTML = '';
             
             let subtotal = 0;
-            let itemsTextForWA = "";
 
             Object.keys(cart).forEach(id => {
                 const p = PRODUCTS.find(prod => prod.id == id);
@@ -485,8 +470,6 @@
                 const activePrice = isWholesale ? p.wholesalePrice : p.price;
                 const itemSubtotal = activePrice * qty;
                 subtotal += itemSubtotal;
-
-                itemsTextForWA += `• ${qty}x ${p.name} - $${itemSubtotal.toFixed(2)}${isWholesale ? ' *(Mayorista)*' : ''}\n`;
 
                 const tr = document.createElement('tr');
                 tr.className = 'text-[10px]';
@@ -517,35 +500,13 @@
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
-            // Preparar el mensaje de WhatsApp
-            let notifyMsg = `*PROFORMA N° ${formattedProformaNum} GENERADA*\n`;
-            if (clientName) notifyMsg += `*Cliente:* ${clientName}\n`;
-            notifyMsg += `-----------------------------------\n`;
-            notifyMsg += itemsTextForWA;
-            notifyMsg += `-----------------------------------\n`;
-            notifyMsg += `*Subtotal:* $${subtotal.toFixed(2)}\n`;
-            notifyMsg += `*IVA (15%):* $${iva.toFixed(2)}\n`;
-            notifyMsg += `*TOTAL:* $${total.toFixed(2)}\n\n`;
-            notifyMsg += `_Hola Decarbunco 3D, acabo de descargar mi proforma en PDF. ¿Me confirmas para coordinar el pago del 50% de anticipo?_`;
-
-            lastNotifyUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(notifyMsg)}`;
-
-            // Guardar PDF y ofrecer botón directo para enviar la notificación
+            // Guarda la proforma localmente sin abrir otras aplicaciones
             html2pdf().set(opt).from(element).save().then(() => {
                 localStorage.setItem('decarbunco_proforma_num', proformaCount + 1);
-
-                // Cambiar el texto del botón para que el usuario pueda abrir WhatsApp sin bloqueo en móviles
-                const btnText = document.getElementById('btn-proforma-text');
-                if (btnText) {
-                    btnText.textContent = "📲 Enviar Notificación por WhatsApp";
-                }
-                
-                // Redireccionar directamente en móviles
-                window.location.href = lastNotifyUrl;
             });
         });
 
-        // Enviar por WhatsApp estándar
+        // ENVIAR PEDIDO POR WHATSAPP (SI EL CLIENTE DECIDE CONTACTARNOS)
         document.getElementById('btn-whatsapp').addEventListener('click', () => {
             const name = document.getElementById('client-name').value.trim();
             if (Object.keys(cart).length === 0) {
@@ -579,7 +540,7 @@
             msg += `_Solicitante requiere confirmación para inicio de producción._`;
 
             const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-            window.location.href = url;
+            window.open(url, '_blank');
         });
 
         // Inicializar
