@@ -158,10 +158,10 @@
                     <input type="text" id="client-name" placeholder="Ej: Plantas Acuáticas / Juan Pérez" class="w-full bg-slate-900 border border-brand-border text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-accent">
                 </div>
 
-                <!-- Botón Generar Proforma PDF + Envío por WhatsApp -->
+                <!-- Botón Generar Proforma PDF -->
                 <button id="btn-download-proforma" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold py-2.5 rounded-lg border border-brand-border flex items-center justify-center space-x-2 transition text-sm">
                     <i class="fas fa-file-pdf text-red-400"></i>
-                    <span>Descargar Proforma (PDF)</span>
+                    <span id="btn-proforma-text">Descargar Proforma (PDF)</span>
                 </button>
 
                 <!-- Botón Enviar Pedido Directo por WhatsApp -->
@@ -252,6 +252,7 @@
         let PRODUCTS = [];
         let cart = {};
         let toastTimeout;
+        let lastNotifyUrl = "";
 
         // Cargar productos desde productos.json
         async function loadProducts() {
@@ -386,7 +387,14 @@
             const floatingCartCount = document.getElementById('floating-cart-count');
             const floatingCartBtn = document.getElementById('floating-cart-btn');
             const cartSubtotal = document.getElementById('cart-subtotal');
+            const btnProformaText = document.getElementById('btn-proforma-text');
             
+            // Restablecer botón de proforma si cambia el carrito
+            if (btnProformaText) {
+                btnProformaText.textContent = "Descargar Proforma (PDF)";
+                lastNotifyUrl = "";
+            }
+
             cartItems.innerHTML = '';
             let total = 0, count = 0;
 
@@ -438,10 +446,16 @@
         
         document.getElementById('cart-close').addEventListener('click', () => document.getElementById('cart-modal').classList.add('hidden'));
 
-        // GENERACIÓN DE PROFORMA PDF + MENSAJE COMPLETO DE PEDIDO POR WHATSAPP
+        // GENERACIÓN DE PROFORMA PDF Y AVISO DE WHATSAPP COMPATIBLE CON MÓVILES
         document.getElementById('btn-download-proforma').addEventListener('click', () => {
             if (Object.keys(cart).length === 0) {
                 alert('El carrito está vacío. Agrega productos para generar la proforma.');
+                return;
+            }
+
+            // Si ya se generó la proforma y está lista la notificación de WhatsApp
+            if (lastNotifyUrl !== "") {
+                window.location.href = lastNotifyUrl;
                 return;
             }
 
@@ -503,23 +517,31 @@
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
-            // 1. Guarda el PDF en el teléfono/PC del cliente
-            // 2. Abre inmediatamente el chat de WhatsApp con la lista detallada
+            // Preparar el mensaje de WhatsApp
+            let notifyMsg = `*PROFORMA N° ${formattedProformaNum} GENERADA*\n`;
+            if (clientName) notifyMsg += `*Cliente:* ${clientName}\n`;
+            notifyMsg += `-----------------------------------\n`;
+            notifyMsg += itemsTextForWA;
+            notifyMsg += `-----------------------------------\n`;
+            notifyMsg += `*Subtotal:* $${subtotal.toFixed(2)}\n`;
+            notifyMsg += `*IVA (15%):* $${iva.toFixed(2)}\n`;
+            notifyMsg += `*TOTAL:* $${total.toFixed(2)}\n\n`;
+            notifyMsg += `_Hola Decarbunco 3D, acabo de descargar mi proforma en PDF. ¿Me confirmas para coordinar el pago del 50% de anticipo?_`;
+
+            lastNotifyUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(notifyMsg)}`;
+
+            // Guardar PDF y ofrecer botón directo para enviar la notificación
             html2pdf().set(opt).from(element).save().then(() => {
                 localStorage.setItem('decarbunco_proforma_num', proformaCount + 1);
 
-                let notifyMsg = `*PROFORMA N° ${formattedProformaNum} GENERADA*\n`;
-                if (clientName) notifyMsg += `*Cliente:* ${clientName}\n`;
-                notifyMsg += `-----------------------------------\n`;
-                notifyMsg += itemsTextForWA;
-                notifyMsg += `-----------------------------------\n`;
-                notifyMsg += `*Subtotal:* $${subtotal.toFixed(2)}\n`;
-                notifyMsg += `*IVA (15%):* $${iva.toFixed(2)}\n`;
-                notifyMsg += `*TOTAL:* $${total.toFixed(2)}\n\n`;
-                notifyMsg += `_Hola Decarbunco 3D, acabo de descargar mi proforma en PDF. ¿Me confirmas para coordinar el pago del 50% de anticipo?_`;
-
-                const notifyUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(notifyMsg)}`;
-                window.open(notifyUrl, '_blank');
+                // Cambiar el texto del botón para que el usuario pueda abrir WhatsApp sin bloqueo en móviles
+                const btnText = document.getElementById('btn-proforma-text');
+                if (btnText) {
+                    btnText.textContent = "📲 Enviar Notificación por WhatsApp";
+                }
+                
+                // Redireccionar directamente en móviles
+                window.location.href = lastNotifyUrl;
             });
         });
 
@@ -557,7 +579,7 @@
             msg += `_Solicitante requiere confirmación para inicio de producción._`;
 
             const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-            window.open(url, '_blank');
+            window.location.href = url;
         });
 
         // Inicializar
