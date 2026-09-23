@@ -52,7 +52,7 @@
             animation: pop 0.3s ease-in-out;
         }
 
-        /* Banderilla tipo cinta en la hoja/imagen del PDF adaptada a móviles */
+        /* Banderilla tipo cinta en la hoja/imagen del PDF */
         .page-ribbon-new {
             position: absolute;
             top: 10px;
@@ -135,7 +135,7 @@
                 <!-- PDF Canvas con Banderilla en la Hoja -->
                 <div class="h-[420px] sm:h-[650px] flex items-center justify-center overflow-hidden relative rounded shadow-2xl bg-slate-900">
                     
-                    <!-- Banderilla Flotante de la Hoja/Página -->
+                    <!-- Banderilla Flotante Única en la Esquina de la Hoja/Imagen del PDF -->
                     <div id="page-new-ribbon" class="page-ribbon-new hidden">
                         NUEVO
                     </div>
@@ -403,7 +403,7 @@
 
             pageProds.forEach(p => {
                 const card = document.createElement('div');
-                card.className = 'relative overflow-hidden bg-brand-card border border-brand-border rounded-lg p-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2';
+                card.className = 'bg-brand-card border border-brand-border rounded-lg p-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2';
                 card.innerHTML = `
                     <div class="pr-2 flex-1 min-w-0">
                         <div class="font-medium text-xs text-slate-100 flex items-center gap-1.5 flex-wrap">
