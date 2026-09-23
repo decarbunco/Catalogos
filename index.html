@@ -79,7 +79,14 @@
         <!-- Interactive PDF Viewer & Direct Page Products -->
         <main class="flex flex-col bg-brand-card rounded-xl border border-brand-border overflow-hidden">
             <div class="p-3 bg-slate-900 border-b border-brand-border flex justify-between items-center">
-                <span class="text-sm font-semibold text-slate-300"><i class="fas fa-book-open mr-2 text-brand-accent"></i>Catálogo Interactivo</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-slate-300"><i class="fas fa-book-open mr-2 text-brand-accent"></i>Catálogo Interactivo</span>
+                    <!-- Punto Rojo de Novedades Globales -->
+                    <span id="new-items-badge" class="hidden relative flex h-3 w-3" title="¡Hay productos nuevos en el catálogo!">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
+                </div>
                 <a href="Acuario.pdf" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition">
                     <i class="fas fa-download mr-1"></i> Descargar PDF
                 </a>
@@ -258,9 +265,20 @@
             try {
                 const response = await fetch('productos.json');
                 PRODUCTS = await response.json();
+                
+                // Comprobar si hay productos marcados como nuevos
+                checkNewProductsBadge();
                 renderPageProducts(pageNum);
             } catch (error) {
                 console.error("Error al cargar productos.json:", error);
+            }
+        }
+
+        function checkNewProductsBadge() {
+            const hasNewProducts = PRODUCTS.some(p => p.isNew === true);
+            const badge = document.getElementById('new-items-badge');
+            if (hasNewProducts && badge) {
+                badge.classList.remove('hidden');
             }
         }
 
@@ -332,8 +350,11 @@
                 card.className = 'bg-brand-card border border-brand-border rounded-lg p-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2';
                 card.innerHTML = `
                     <div class="pr-2 flex-1 min-w-0">
-                        <div class="font-medium text-xs text-slate-100 truncate">${p.name}</div>
-                        <div class="text-[11px] text-slate-400">
+                        <div class="font-medium text-xs text-slate-100 flex items-center gap-1.5 flex-wrap">
+                            <span class="truncate">${p.name}</span>
+                            ${p.isNew ? '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-black px-1.5 py-0.5 rounded tracking-wider uppercase">✨ NUEVO</span>' : ''}
+                        </div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">
                             P.U: <span class="text-slate-200 font-semibold">$${p.price.toFixed(2)}</span>
                             ${p.price !== p.wholesalePrice ? `<span class="text-brand-accent ml-1">(≥3: $${p.wholesalePrice.toFixed(2)})</span>` : ''}
                         </div>
@@ -438,7 +459,7 @@
         
         document.getElementById('cart-close').addEventListener('click', () => document.getElementById('cart-modal').classList.add('hidden'));
 
-        // DESCARGA LIMPIA DE PROFORMA PDF (SIN REDIRECCIONES AUTOMÁTICAS)
+        // DESCARGA LIMPIA DE PROFORMA PDF
         document.getElementById('btn-download-proforma').addEventListener('click', () => {
             if (Object.keys(cart).length === 0) {
                 alert('El carrito está vacío. Agrega productos para generar la proforma.');
@@ -500,13 +521,12 @@
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
-            // Guarda la proforma localmente sin abrir otras aplicaciones
             html2pdf().set(opt).from(element).save().then(() => {
                 localStorage.setItem('decarbunco_proforma_num', proformaCount + 1);
             });
         });
 
-        // ENVIAR PEDIDO POR WHATSAPP (SI EL CLIENTE DECIDE CONTACTARNOS)
+        // ENVIAR PEDIDO POR WHATSAPP
         document.getElementById('btn-whatsapp').addEventListener('click', () => {
             const name = document.getElementById('client-name').value.trim();
             if (Object.keys(cart).length === 0) {
