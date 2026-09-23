@@ -52,23 +52,33 @@
             animation: pop 0.3s ease-in-out;
         }
 
-        /* Banderilla tipo cinta en la hoja/imagen del PDF */
+        /* Banderilla tipo cinta en la hoja/imagen del PDF adaptada a móviles */
         .page-ribbon-new {
             position: absolute;
-            top: 15px;
-            right: -30px;
+            top: 10px;
+            right: -28px;
             background-color: #ef4444;
             color: white;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 900;
             text-transform: uppercase;
-            padding: 4px 32px;
+            padding: 3px 26px;
             transform: rotate(45deg);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            letter-spacing: 1px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            letter-spacing: 0.5px;
             z-index: 30;
             pointer-events: none;
             border: 1px dashed rgba(255, 255, 255, 0.4);
+        }
+
+        @media (min-width: 640px) {
+            .page-ribbon-new {
+                top: 15px;
+                right: -30px;
+                font-size: 10px;
+                padding: 4px 32px;
+                letter-spacing: 1px;
+            }
         }
     </style>
 </head>
@@ -93,29 +103,29 @@
     </header>
 
     <!-- Content Layout Enfocado -->
-    <div class="max-w-4xl mx-auto w-full flex-1 p-3 sm:p-4">
+    <div class="max-w-4xl mx-auto w-full flex-1 p-2 sm:p-4">
 
         <!-- Interactive PDF Viewer & Direct Page Products -->
         <main class="flex flex-col bg-brand-card rounded-xl border border-brand-border overflow-hidden">
             
             <!-- Barra Superior Adaptada para PC y Celular -->
-            <div class="p-3 bg-slate-900 border-b border-brand-border flex justify-between items-center gap-2">
-                <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 min-w-0">
+            <div class="p-2.5 sm:p-3 bg-slate-900 border-b border-brand-border flex justify-between items-center gap-1.5">
+                <div class="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-wrap">
                     <span class="text-xs sm:text-sm font-semibold text-slate-300 truncate">
-                        <i class="fas fa-book-open mr-1.5 text-brand-accent"></i>Catálogo Interactivo
+                        <i class="fas fa-book-open mr-1 text-brand-accent"></i>Catálogo
                     </span>
                     
                     <!-- Aviso Global "Productos Nuevos" con Punto Rojo Parpadeante -->
-                    <div id="new-items-badge" class="hidden items-center gap-1.5 bg-red-950/80 border border-red-500/50 px-2 py-0.5 rounded-full w-fit">
+                    <div id="new-items-badge" class="hidden items-center gap-1 bg-red-950/90 border border-red-500/60 px-2 py-0.5 rounded-full shrink-0">
                         <span class="relative flex h-2 w-2">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                         </span>
-                        <span class="text-[10px] sm:text-xs font-bold text-red-300 uppercase tracking-wider">¡Productos Nuevos!</span>
+                        <span class="text-[9px] sm:text-xs font-black text-red-200 uppercase tracking-wide">¡NUEVOS!</span>
                     </div>
                 </div>
                 
-                <a href="Acuario.pdf" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition shrink-0 self-start sm:self-center">
+                <a href="Acuario.pdf" target="_blank" class="text-[11px] sm:text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded transition shrink-0">
                     <i class="fas fa-download mr-1"></i> Descargar PDF
                 </a>
             </div>
@@ -123,7 +133,7 @@
             <div class="w-full bg-slate-950 flex flex-col p-2 sm:p-4 relative">
                 
                 <!-- PDF Canvas con Banderilla en la Hoja -->
-                <div class="h-[480px] sm:h-[650px] flex items-center justify-center overflow-hidden relative rounded shadow-2xl bg-slate-900">
+                <div class="h-[420px] sm:h-[650px] flex items-center justify-center overflow-hidden relative rounded shadow-2xl bg-slate-900">
                     
                     <!-- Banderilla Flotante de la Hoja/Página -->
                     <div id="page-new-ribbon" class="page-ribbon-new hidden">
@@ -135,24 +145,24 @@
 
                 <!-- Botones de navegación de página -->
                 <div class="flex justify-between items-center bg-slate-900 border border-brand-border p-2 rounded-lg my-3">
-                    <button id="prev-page" class="bg-slate-800 hover:bg-brand-accent hover:text-black text-slate-200 px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                    <button id="prev-page" class="bg-slate-800 hover:bg-brand-accent hover:text-black text-slate-200 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
                         <i class="fas fa-chevron-left"></i> Anterior
                     </button>
                     
-                    <span id="page-num" class="text-xs text-slate-300 font-medium">Cargando PDF...</span>
+                    <span id="page-num" class="text-xs text-slate-300 font-medium text-center">Cargando PDF...</span>
                     
-                    <button id="next-page" class="bg-slate-800 hover:bg-brand-accent hover:text-black text-slate-200 px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                    <button id="next-page" class="bg-slate-800 hover:bg-brand-accent hover:text-black text-slate-200 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
                         Siguiente <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
 
                 <!-- Productos vinculados directamente a la página actual -->
-                <div class="bg-slate-900 border border-brand-border p-3 rounded-lg space-y-2">
-                    <div class="flex items-center justify-between border-b border-brand-border/50 pb-2">
+                <div class="bg-slate-900 border border-brand-border p-2.5 sm:p-3 rounded-lg space-y-2">
+                    <div class="flex items-center justify-between border-b border-brand-border/50 pb-2 flex-wrap gap-1">
                         <span class="text-xs font-bold text-brand-accent uppercase tracking-wider flex items-center gap-1.5">
                             <i class="fas fa-bolt"></i> Productos en esta página:
                         </span>
-                        <span class="text-[11px] text-slate-400">⚡ Descuento automático (≥3 unid.)</span>
+                        <span class="text-[10px] sm:text-[11px] text-slate-400">⚡ Descuento automático (≥3 unid.)</span>
                     </div>
                     <div id="page-products-list" class="space-y-2"></div>
                 </div>
@@ -161,21 +171,23 @@
     </div>
 
     <!-- BOTÓN FLOTANTE DEL CARRITO -->
-    <div class="fixed top-1/2 -translate-y-1/2 right-4 z-40">
-        <button id="floating-cart-btn" class="bg-brand-accent text-black font-bold p-3.5 rounded-full shadow-2xl border-2 border-slate-900 flex items-center justify-center transition-transform active:scale-95 hover:scale-105">
+    <div class="fixed top-1/2 -translate-y-1/2 right-3 sm:right-4 z-40">
+        <button id="floating-cart-btn" class="bg-brand-accent text-black font-bold p-3 sm:p-3.5 rounded-full shadow-2xl border-2 border-slate-900 flex items-center justify-center transition-transform active:scale-95 hover:scale-105">
             <div class="relative">
-                <i class="fas fa-shopping-cart text-xl"></i>
-                <span id="floating-cart-count" class="absolute -top-3 -right-3 bg-red-600 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-black">0</span>
+                <i class="fas fa-shopping-cart text-lg sm:text-xl"></i>
+                <span id="floating-cart-count" class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] sm:text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-black">0</span>
             </div>
         </button>
     </div>
 
     <!-- NOTIFICACIÓN RÁPIDA (TOAST) -->
-    <div id="cart-toast" class="fixed bottom-28 sm:bottom-32 left-1/2 -translate-x-1/2 bg-slate-900 border border-brand-accent text-white px-4 py-2.5 rounded-full shadow-2xl z-50 hidden flex items-center gap-3 transition-all duration-300">
-        <i class="fas fa-check-circle text-brand-accent text-lg"></i>
-        <span class="text-xs font-medium">¡Producto agregado al carrito!</span>
-        <button id="toast-open-cart" class="bg-brand-accent text-black text-xs font-bold px-2.5 py-1 rounded-full hover:opacity-90">
-            Ver Carrito
+    <div id="cart-toast" class="fixed bottom-24 sm:bottom-32 left-1/2 -translate-x-1/2 bg-slate-900 border border-brand-accent text-white px-4 py-2 rounded-full shadow-2xl z-50 hidden flex items-center gap-3 transition-all duration-300 w-[90%] max-w-xs justify-between">
+        <div class="flex items-center gap-2 min-w-0">
+            <i class="fas fa-check-circle text-brand-accent text-base shrink-0"></i>
+            <span class="text-xs font-medium truncate">¡Agregado al carrito!</span>
+        </div>
+        <button id="toast-open-cart" class="bg-brand-accent text-black text-xs font-bold px-2.5 py-1 rounded-full hover:opacity-90 shrink-0">
+            Ver
         </button>
     </div>
 
@@ -340,7 +352,7 @@
                     }
                 });
             });
-            document.getElementById('page-num').textContent = `Página ${num} de ${pdfDoc.numPages}`;
+            document.getElementById('page-num').textContent = `Pág. ${num} de ${pdfDoc.numPages}`;
             renderPageProducts(num);
         }
 
@@ -363,7 +375,7 @@
 
         pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
             pdfDoc = pdfDoc_;
-            document.getElementById('page-num').textContent = `Página ${pageNum} de ${pdfDoc.numPages}`;
+            document.getElementById('page-num').textContent = `Pág. ${pageNum} de ${pdfDoc.numPages}`;
             renderPage(pageNum);
         });
 
