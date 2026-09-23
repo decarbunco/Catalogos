@@ -52,7 +52,7 @@
             animation: pop 0.3s ease-in-out;
         }
 
-        /* Banderilla en la esquina para Producto Nuevo */
+        /* Banderilla en la tarjeta de lista de producto */
         .ribbon-new {
             position: absolute;
             top: 0;
@@ -68,6 +68,26 @@
             letter-spacing: 0.5px;
             z-index: 10;
             pointer-events: none;
+        }
+
+        /* Banderilla tipo cinta en la hoja/imagen del PDF */
+        .page-ribbon-new {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: linear-[#ef4444, #dc2626];
+            background-color: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 4px 32px;
+            transform: rotate(45deg);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+            z-index: 30;
+            pointer-events: none;
+            border: 1px dashed rgba(255, 255, 255, 0.4);
         }
     </style>
 </head>
@@ -96,29 +116,40 @@
 
         <!-- Interactive PDF Viewer & Direct Page Products -->
         <main class="flex flex-col bg-brand-card rounded-xl border border-brand-border overflow-hidden">
+            
+            <!-- Barra Superior Adaptada para PC y Celular -->
             <div class="p-3 bg-slate-900 border-b border-brand-border flex justify-between items-center gap-2">
-                <div class="flex items-center gap-2 min-w-0">
-                    <span class="text-xs sm:text-sm font-semibold text-slate-300 truncate"><i class="fas fa-book-open mr-1.5 text-brand-accent"></i>Catálogo Interactivo</span>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 min-w-0">
+                    <span class="text-xs sm:text-sm font-semibold text-slate-300 truncate">
+                        <i class="fas fa-book-open mr-1.5 text-brand-accent"></i>Catálogo Interactivo
+                    </span>
                     
-                    <!-- Aviso Global "Productos Nuevos" con Punto Rojo Parpadeante -->
-                    <div id="new-items-badge" class="hidden items-center gap-1.5 bg-red-950/60 border border-red-500/40 px-2 py-0.5 rounded-full shrink-0">
-                        <span class="relative flex h-2.5 w-2.5">
+                    <!-- Aviso Global "Productos Nuevos" con Punto Rojo Parpadeante (Se ubica debajo en Móvil, al lado en PC) -->
+                    <div id="new-items-badge" class="hidden items-center gap-1.5 bg-red-950/80 border border-red-500/50 px-2 py-0.5 rounded-full w-fit">
+                        <span class="relative flex h-2 w-2">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                         </span>
                         <span class="text-[10px] sm:text-xs font-bold text-red-300 uppercase tracking-wider">¡Productos Nuevos!</span>
                     </div>
                 </div>
                 
-                <a href="Acuario.pdf" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition shrink-0">
+                <a href="Acuario.pdf" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition shrink-0 self-start sm:self-center">
                     <i class="fas fa-download mr-1"></i> Descargar PDF
                 </a>
             </div>
             
             <div class="w-full bg-slate-950 flex flex-col p-2 sm:p-4 relative">
-                <!-- PDF Canvas -->
-                <div class="h-[480px] sm:h-[650px] flex items-center justify-center overflow-auto">
-                    <canvas id="pdf-canvas" class="max-h-full max-w-full rounded shadow-2xl object-contain"></canvas>
+                
+                <!-- PDF Canvas con Contenedor de Banderilla en la Hoja -->
+                <div class="h-[480px] sm:h-[650px] flex items-center justify-center overflow-hidden relative rounded shadow-2xl bg-slate-900">
+                    
+                    <!-- Banderilla Flotante de la Hoja/Página -->
+                    <div id="page-new-ribbon" class="page-ribbon-new hidden">
+                        NUEVO
+                    </div>
+
+                    <canvas id="pdf-canvas" class="max-h-full max-w-full object-contain"></canvas>
                 </div>
 
                 <!-- Botones de navegación de página -->
@@ -358,10 +389,19 @@
         // Renderizar productos de la página actual
         function renderPageProducts(currentPage) {
             const container = document.getElementById('page-products-list');
+            const pageRibbon = document.getElementById('page-new-ribbon');
             if (!container) return;
             container.innerHTML = '';
 
             const pageProds = PRODUCTS.filter(p => p.page === currentPage);
+            const hasNewInThisPage = pageProds.some(p => p.isNew === true);
+
+            // Mostrar u ocultar la banderilla en la esquina de la hoja/imagen
+            if (hasNewInThisPage && pageRibbon) {
+                pageRibbon.classList.remove('hidden');
+            } else if (pageRibbon) {
+                pageRibbon.classList.add('hidden');
+            }
 
             if (pageProds.length === 0) {
                 container.innerHTML = '<p class="text-xs text-slate-400 italic py-1">No hay productos vinculados en esta página.</p>';
