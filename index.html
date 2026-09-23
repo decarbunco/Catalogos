@@ -52,6 +52,23 @@
             animation: pop 0.3s ease-in-out;
         }
 
+        /* Comportamiento del Header por Dispositivo:
+           - Celular (< 640px): En posición RELATIVA (se desplaza con el scroll hacia arriba)
+           - PC (>= 640px): En posición STICKY (se queda fijo en la parte superior)
+        */
+        .adaptive-header {
+            position: relative;
+            top: auto;
+            z-index: 40;
+        }
+
+        @media (min-width: 640px) {
+            .adaptive-header {
+                position: sticky;
+                top: 0;
+            }
+        }
+
         /* Banderilla tipo cinta en la hoja/imagen del PDF */
         .page-ribbon-new {
             position: absolute;
@@ -84,8 +101,8 @@
 </head>
 <body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation pb-10">
 
-    <!-- Header Adaptativo: Desplazable en Celular (relative), Fijo en Computadora (sm:sticky sm:top-0) -->
-    <header class="bg-brand-card border-b border-brand-border relative sm:sticky sm:top-0 z-40">
+    <!-- Header Adaptativo -->
+    <header class="adaptive-header bg-brand-card border-b border-brand-border">
         <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <img src="SoloLogo.png" alt="Decarbunco 3D Logo" class="w-10 h-10 rounded-lg object-contain bg-brand-card p-0.5 border border-brand-border">
