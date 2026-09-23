@@ -101,7 +101,7 @@
 </head>
 <body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation pb-10">
 
-    <!-- Header Adaptativo -->
+    <!-- Header Adaptativo con Botón Directo a WhatsApp -->
     <header class="adaptive-header bg-brand-card border-b border-brand-border">
         <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -111,11 +111,12 @@
                     <p class="text-xs text-slate-400">Diseño - Imprimo - Resuelvo</p>
                 </div>
             </div>
-            <button id="cart-toggle" class="relative bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg border border-brand-border flex items-center space-x-2 transition">
-                <i class="fas fa-shopping-cart text-brand-accent"></i>
-                <span class="font-semibold text-sm">Carrito</span>
-                <span id="cart-count" class="bg-brand-accent text-black text-xs font-bold px-2 py-0.5 rounded-full">0</span>
-            </button>
+            
+            <!-- Botón Contáctame por WhatsApp -->
+            <a href="https://wa.me/593986492294?text=Hola%20Decarbunco%203D,%20revis%C3%A9%20tu%20cat%C3%A1logo%20interactivo%20y%20quisiera%20hacerte%20una%20consulta." target="_blank" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 px-3.5 py-2 rounded-lg flex items-center space-x-2 transition font-semibold text-xs sm:text-sm">
+                <i class="fab fa-whatsapp text-emerald-400 text-base sm:text-lg"></i>
+                <span>Contáctame</span>
+            </a>
         </div>
     </header>
 
@@ -475,7 +476,6 @@
 
         function updateCart() {
             const cartItems = document.getElementById('cart-items');
-            const cartCount = document.getElementById('cart-count');
             const floatingCartCount = document.getElementById('floating-cart-count');
             const floatingCartBtn = document.getElementById('floating-cart-btn');
             const cartSubtotal = document.getElementById('cart-subtotal');
@@ -514,7 +514,6 @@
 
             if (count === 0) cartItems.innerHTML = '<p class="text-center text-slate-500 text-sm py-8">El carrito está vacío</p>';
 
-            cartCount.textContent = count;
             floatingCartCount.textContent = count;
 
             floatingCartBtn.classList.add('animate-pop');
@@ -525,7 +524,6 @@
 
         // Eventos de apertura de Carrito
         const openModal = () => document.getElementById('cart-modal').classList.remove('hidden');
-        document.getElementById('cart-toggle').addEventListener('click', openModal);
         document.getElementById('floating-cart-btn').addEventListener('click', openModal);
         document.getElementById('toast-open-cart').addEventListener('click', openModal);
         
