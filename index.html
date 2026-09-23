@@ -84,8 +84,8 @@
 </head>
 <body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation pb-10">
 
-    <!-- Header con Logo Personalizado -->
-    <header class="bg-brand-card border-b border-brand-border sticky top-0 z-40">
+    <!-- Header Normal (Se desplaza hacia arriba con el scroll) -->
+    <header class="bg-brand-card border-b border-brand-border relative z-30">
         <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <img src="SoloLogo.png" alt="Decarbunco 3D Logo" class="w-10 h-10 rounded-lg object-contain bg-brand-card p-0.5 border border-brand-border">
@@ -135,7 +135,7 @@
                 <!-- PDF Canvas con Banderilla en la Hoja -->
                 <div class="h-[420px] sm:h-[650px] flex items-center justify-center overflow-hidden relative rounded shadow-2xl bg-slate-900">
                     
-                    <!-- Banderilla Flotante Única en la Esquina de la Hoja/Imagen del PDF -->
+                    <!-- Banderilla Flotante de la Hoja/Página -->
                     <div id="page-new-ribbon" class="page-ribbon-new hidden">
                         NUEVO
                     </div>
