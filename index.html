@@ -43,6 +43,15 @@
         }
     </script>
     <style>
+        /* Asegura desplazamiento fluido en celulares */
+        html, body {
+            overflow-x: hidden;
+            overflow-y: auto !important;
+            height: auto !important;
+            min-height: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+
         @keyframes pop {
             0% { transform: scale(1); }
             50% { transform: scale(1.25); }
@@ -52,20 +61,20 @@
             animation: pop 0.3s ease-in-out;
         }
 
-        /* Comportamiento del Header por Dispositivo:
-           - Celular (< 640px): En posición RELATIVA (se desplaza con el scroll hacia arriba)
-           - PC (>= 640px): En posición STICKY (se queda fijo en la parte superior)
+        /* Header:
+           - Celular: 'static' o 'relative' (Se desplaza libremente con el scroll hacia arriba)
+           - PC (>= 640px): 'sticky' (Se fija en la parte superior)
         */
         .adaptive-header {
-            position: relative;
-            top: auto;
+            position: relative !important;
+            top: auto !important;
             z-index: 40;
         }
 
         @media (min-width: 640px) {
             .adaptive-header {
-                position: sticky;
-                top: 0;
+                position: sticky !important;
+                top: 0 !important;
             }
         }
 
@@ -101,7 +110,7 @@
 </head>
 <body class="bg-brand-bg text-slate-100 min-h-screen flex flex-col font-sans touch-manipulation pb-10">
 
-    <!-- Header Adaptativo con Botón Directo a WhatsApp -->
+    <!-- Header Adaptativo -->
     <header class="adaptive-header bg-brand-card border-b border-brand-border">
         <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
