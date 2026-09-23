@@ -52,30 +52,11 @@
             animation: pop 0.3s ease-in-out;
         }
 
-        /* Banderilla en la tarjeta de lista de producto */
-        .ribbon-new {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #ef4444;
-            color: white;
-            font-size: 8px;
-            font-weight: 900;
-            text-transform: uppercase;
-            padding: 2px 18px;
-            transform: rotate(25deg) translate(8px, -4px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            letter-spacing: 0.5px;
-            z-index: 10;
-            pointer-events: none;
-        }
-
         /* Banderilla tipo cinta en la hoja/imagen del PDF */
         .page-ribbon-new {
             position: absolute;
             top: 15px;
             right: -30px;
-            background: linear-[#ef4444, #dc2626];
             background-color: #ef4444;
             color: white;
             font-size: 10px;
@@ -124,7 +105,7 @@
                         <i class="fas fa-book-open mr-1.5 text-brand-accent"></i>Catálogo Interactivo
                     </span>
                     
-                    <!-- Aviso Global "Productos Nuevos" con Punto Rojo Parpadeante (Se ubica debajo en Móvil, al lado en PC) -->
+                    <!-- Aviso Global "Productos Nuevos" con Punto Rojo Parpadeante -->
                     <div id="new-items-badge" class="hidden items-center gap-1.5 bg-red-950/80 border border-red-500/50 px-2 py-0.5 rounded-full w-fit">
                         <span class="relative flex h-2 w-2">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -141,7 +122,7 @@
             
             <div class="w-full bg-slate-950 flex flex-col p-2 sm:p-4 relative">
                 
-                <!-- PDF Canvas con Contenedor de Banderilla en la Hoja -->
+                <!-- PDF Canvas con Banderilla en la Hoja -->
                 <div class="h-[480px] sm:h-[650px] flex items-center justify-center overflow-hidden relative rounded shadow-2xl bg-slate-900">
                     
                     <!-- Banderilla Flotante de la Hoja/Página -->
@@ -412,8 +393,6 @@
                 const card = document.createElement('div');
                 card.className = 'relative overflow-hidden bg-brand-card border border-brand-border rounded-lg p-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2';
                 card.innerHTML = `
-                    ${p.isNew ? '<div class="ribbon-new">NUEVO</div>' : ''}
-                    
                     <div class="pr-2 flex-1 min-w-0">
                         <div class="font-medium text-xs text-slate-100 flex items-center gap-1.5 flex-wrap">
                             <span class="truncate">${p.name}</span>
