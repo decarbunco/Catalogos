@@ -401,16 +401,21 @@
             }
         }
 
-        // CONTROLADOR DE PDFs INDEPENDIENTES CON RESPALDO SILENCIOSO
+        // CONTROLADOR DE PDFs INDEPENDIENTES Y BLINDADOS
         const catalogs = {
-            acuario: { urls: ['Acuario.pdf', 'acuario.pdf', 'Acuario.PDF'], doc: null, page: 1, rendering: false, pending: null, canvasId: 'canvas-acuario', numId: 'num-acuario', listId: 'list-acuario', ribbonId: 'ribbon-acuario' },
-            hogar:   { urls: ['Hogar.pdf', 'hogar.pdf', 'Hogar.PDF'],   doc: null, page: 1, rendering: false, pending: null, canvasId: 'canvas-hogar',   numId: 'num-hogar',   listId: 'list-hogar', ribbonId: 'ribbon-hogar' }
+            acuario: { url: 'Acuario.pdf', doc: null, page: 1, rendering: false, pending: null, renderTask: null, canvasId: 'canvas-acuario', numId: 'num-acuario', listId: 'list-acuario', ribbonId: 'ribbon-acuario' },
+            hogar:   { url: 'Hogar.pdf',   doc: null, page: 1, rendering: false, pending: null, renderTask: null, canvasId: 'canvas-hogar',   numId: 'num-hogar',   listId: 'list-hogar', ribbonId: 'ribbon-hogar' }
         };
 
         function renderPDFPage(key, num) {
             const cat = catalogs[key];
             if (!cat.doc) return;
             
+            // Cancelar tarea previa de renderizado para evitar colisiones
+            if (cat.renderTask) {
+                cat.renderTask.cancel();
+            }
+
             cat.rendering = true;
             cat.doc.getPage(num).then(function(page) {
                 const canvas = document.getElementById(cat.canvasId);
@@ -420,12 +425,18 @@
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
 
-                const renderTask = page.render({ canvasContext: ctx, viewport: viewport });
-                renderTask.promise.then(function() {
+                cat.renderTask = page.render({ canvasContext: ctx, viewport: viewport });
+                cat.renderTask.promise.then(function() {
                     cat.rendering = false;
                     if (cat.pending !== null) {
-                        renderPDFPage(key, cat.pending);
+                        const nextPage = cat.pending;
                         cat.pending = null;
+                        renderPDFPage(key, nextPage);
+                    }
+                }).catch(function(err) {
+                    // Ignorar errores normales producidos por la cancelación de renderizado previo
+                    if (err.name !== 'RenderingCancelledException') {
+                        console.error(err);
                     }
                 });
             });
@@ -440,31 +451,29 @@
             else renderPDFPage(key, num);
         }
 
-        function loadPDFWithFallback(key, urlIndex) {
+        // Carga secuencial limpia
+        function initPDF(key) {
             const cat = catalogs[key];
             const numElement = document.getElementById(cat.numId);
 
-            if (urlIndex >= cat.urls.length) {
-                console.error(`No se pudo cargar el PDF para ${key} tras intentar todas las variantes.`);
-                if (numElement) numElement.textContent = `Error al cargar ${key}`;
-                return;
-            }
-
-            const currentUrl = cat.urls[urlIndex];
-            
-            pdfjsLib.getDocument(currentUrl).promise.then(function(pdfDoc_) {
+            pdfjsLib.getDocument(cat.url).promise.then(function(pdfDoc_) {
                 cat.doc = pdfDoc_;
                 cat.page = 1;
                 if (numElement) numElement.textContent = `Pág. ${cat.page} de ${cat.doc.numPages}`;
                 renderPDFPage(key, cat.page);
-            }).catch(err => {
-                console.warn(`Fallo temporal al cargar ${currentUrl}, intentando alternativa de respaldo...`);
-                loadPDFWithFallback(key, urlIndex + 1);
+            }).catch(function(err) {
+                console.warn(`Reintentando carga directa de ${cat.url}...`);
+                setTimeout(() => {
+                    pdfjsLib.getDocument(cat.url).promise.then(function(pdfDoc_) {
+                        cat.doc = pdfDoc_;
+                        cat.page = 1;
+                        if (numElement) numElement.textContent = `Pág. ${cat.page} de ${cat.doc.numPages}`;
+                        renderPDFPage(key, cat.page);
+                    }).catch(() => {
+                        if (numElement) numElement.textContent = `Error al cargar ${key}`;
+                    });
+                }, 300);
             });
-        }
-
-        function initPDF(key) {
-            loadPDFWithFallback(key, 0);
         }
 
         // Listeners Botones
