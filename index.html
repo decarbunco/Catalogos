@@ -401,7 +401,7 @@
             }
         }
 
-        // CONTROLADOR DE PDFs INDEPENDIENTES Y BLINDADOS
+        // CONTROLADOR DE PDFs INDEPENDIENTES Y SEGURO EN MÓVILES
         const catalogs = {
             acuario: { url: 'Acuario.pdf', doc: null, page: 1, rendering: false, pending: null, renderTask: null, canvasId: 'canvas-acuario', numId: 'num-acuario', listId: 'list-acuario', ribbonId: 'ribbon-acuario' },
             hogar:   { url: 'Hogar.pdf',   doc: null, page: 1, rendering: false, pending: null, renderTask: null, canvasId: 'canvas-hogar',   numId: 'num-hogar',   listId: 'list-hogar', ribbonId: 'ribbon-hogar' }
@@ -411,33 +411,38 @@
             const cat = catalogs[key];
             if (!cat.doc) return;
             
-            // Cancelar tarea previa de renderizado para evitar colisiones
+            // Cancelar tarea previa para evitar colisiones en pantallas móviles
             if (cat.renderTask) {
-                cat.renderTask.cancel();
+                try { cat.renderTask.cancel(); } catch(e) {}
             }
 
             cat.rendering = true;
-            cat.doc.getPage(num).then(function(page) {
-                const canvas = document.getElementById(cat.canvasId);
-                const ctx = canvas.getContext('2d');
-                const viewport = page.getViewport({ scale: 1.8 });
-                
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
 
-                cat.renderTask = page.render({ canvasContext: ctx, viewport: viewport });
-                cat.renderTask.promise.then(function() {
-                    cat.rendering = false;
-                    if (cat.pending !== null) {
-                        const nextPage = cat.pending;
-                        cat.pending = null;
-                        renderPDFPage(key, nextPage);
-                    }
-                }).catch(function(err) {
-                    // Ignorar errores normales producidos por la cancelación de renderizado previo
-                    if (err.name !== 'RenderingCancelledException') {
-                        console.error(err);
-                    }
+            // Esperar a que el DOM móvil mida el Canvas antes de renderizar
+            window.requestAnimationFrame(() => {
+                cat.doc.getPage(num).then(function(page) {
+                    const canvas = document.getElementById(cat.canvasId);
+                    if (!canvas) return;
+                    
+                    const ctx = canvas.getContext('2d');
+                    const viewport = page.getViewport({ scale: 1.8 });
+                    
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    cat.renderTask = page.render({ canvasContext: ctx, viewport: viewport });
+                    cat.renderTask.promise.then(function() {
+                        cat.rendering = false;
+                        if (cat.pending !== null) {
+                            const nextPage = cat.pending;
+                            cat.pending = null;
+                            renderPDFPage(key, nextPage);
+                        }
+                    }).catch(function(err) {
+                        if (err.name !== 'RenderingCancelledException') {
+                            console.error(err);
+                        }
+                    });
                 });
             });
 
@@ -451,7 +456,7 @@
             else renderPDFPage(key, num);
         }
 
-        // Carga secuencial limpia
+        // Carga secuencial limpia de PDF
         function initPDF(key) {
             const cat = catalogs[key];
             const numElement = document.getElementById(cat.numId);
@@ -472,7 +477,7 @@
                     }).catch(() => {
                         if (numElement) numElement.textContent = `Error al cargar ${key}`;
                     });
-                }, 300);
+                }, 400);
             });
         }
 
