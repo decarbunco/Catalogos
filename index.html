@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Decarbunco 3D - Catálogo & Pedidos</title>
+    <title>Decarbunco 3D - Catálogos Interactivos</title>
 
     <!-- Iconos para Pantalla de Inicio / Acceso Directo Móvil -->
     <link rel="apple-touch-icon" sizes="180x180" href="SoloLogo.png">
@@ -19,7 +19,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Librerías: PDF.js (Visor) y html2pdf.js (Generador de Proformas) -->
+    <!-- Librerías: PDF.js y html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
@@ -61,10 +61,6 @@
             animation: pop 0.3s ease-in-out;
         }
 
-        /* Header:
-           - Celular: 'relative' (Se desplaza libremente con el scroll hacia arriba)
-           - PC (>= 640px): 'sticky' (Se fija en la parte superior)
-        */
         .adaptive-header {
             position: relative !important;
             top: auto !important;
@@ -129,21 +125,18 @@
         </div>
     </header>
 
-    <!-- Content Layout Enfocado -->
-    <div class="max-w-4xl mx-auto w-full flex-1 p-2 sm:p-4">
+    <!-- Contenedor Principal con Ambos Catálogos Apilados -->
+    <div class="max-w-4xl mx-auto w-full flex-1 p-2 sm:p-4 space-y-6">
 
-        <!-- Interactive PDF Viewer & Direct Page Products -->
-        <main class="flex flex-col bg-brand-card rounded-xl border border-brand-border overflow-hidden">
-            
-            <!-- Barra Superior Adaptada para PC y Celular -->
+        <!-- ==================== CATÁLOGO 1: ACUARIO ==================== -->
+        <section class="flex flex-col bg-brand-card rounded-xl border border-brand-border overflow-hidden shadow-xl">
             <div class="p-2.5 sm:p-3 bg-slate-900 border-b border-brand-border flex justify-between items-center gap-1.5">
                 <div class="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-wrap">
-                    <span class="text-xs sm:text-sm font-semibold text-slate-300 truncate">
-                        <i class="fas fa-book-open mr-1 text-brand-accent"></i>Catálogo
+                    <span class="text-xs sm:text-sm font-bold text-brand-accent truncate flex items-center gap-1.5">
+                        <i class="fas fa-fish text-brand-accent"></i> CATÁLOGO DE ACUARIO
                     </span>
                     
-                    <!-- Aviso Global "Productos Nuevos" con Punto Rojo Parpadeante -->
-                    <div id="new-items-badge" class="hidden items-center gap-1 bg-red-950/90 border border-red-500/60 px-2 py-0.5 rounded-full shrink-0">
+                    <div id="badge-acuario" class="hidden items-center gap-1 bg-red-950/90 border border-red-500/60 px-2 py-0.5 rounded-full shrink-0">
                         <span class="relative flex h-2 w-2">
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
@@ -158,46 +151,92 @@
             </div>
             
             <div class="w-full bg-slate-950 flex flex-col p-2 sm:p-4 relative">
-                
-                <!-- PDF Canvas con Banderilla en la Hoja -->
+                <!-- PDF Canvas Acuario -->
                 <div class="h-[420px] sm:h-[650px] flex items-center justify-center overflow-hidden relative rounded shadow-2xl bg-slate-900">
-                    
-                    <!-- Banderilla Flotante de la Hoja/Página -->
-                    <div id="page-new-ribbon" class="page-ribbon-new hidden">
-                        NUEVO
-                    </div>
-
-                    <canvas id="pdf-canvas" class="max-h-full max-w-full object-contain"></canvas>
+                    <div id="ribbon-acuario" class="page-ribbon-new hidden">NUEVO</div>
+                    <canvas id="canvas-acuario" class="max-h-full max-w-full object-contain"></canvas>
                 </div>
 
-                <!-- Botones de navegación de página -->
+                <!-- Navegación Acuario -->
                 <div class="flex justify-between items-center bg-slate-900 border border-brand-border p-2 rounded-lg my-3">
-                    <button id="prev-page" class="bg-slate-800 hover:bg-brand-accent hover:text-black text-slate-200 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                    <button id="prev-acuario" class="bg-slate-800 hover:bg-brand-accent hover:text-black text-slate-200 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
                         <i class="fas fa-chevron-left"></i> Anterior
                     </button>
-                    
-                    <span id="page-num" class="text-xs text-slate-300 font-medium text-center">Cargando PDF...</span>
-                    
-                    <button id="next-page" class="bg-slate-800 hover:bg-brand-accent hover:text-black text-slate-200 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                    <span id="num-acuario" class="text-xs text-slate-300 font-medium text-center">Cargando Acuario...</span>
+                    <button id="next-acuario" class="bg-slate-800 hover:bg-brand-accent hover:text-black text-slate-200 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
                         Siguiente <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
 
-                <!-- Productos vinculados directamente a la página actual -->
+                <!-- Productos Acuario -->
                 <div class="bg-slate-900 border border-brand-border p-2.5 sm:p-3 rounded-lg space-y-2">
                     <div class="flex items-center justify-between border-b border-brand-border/50 pb-2 flex-wrap gap-1">
                         <span class="text-xs font-bold text-brand-accent uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="fas fa-bolt"></i> Productos en esta página:
+                            <i class="fas fa-bolt"></i> Productos en esta página (Acuario):
                         </span>
                         <span class="text-[10px] sm:text-[11px] text-slate-400">⚡ Descuento automático (≥3 unid.)</span>
                     </div>
-                    <div id="page-products-list" class="space-y-2"></div>
+                    <div id="list-acuario" class="space-y-2"></div>
                 </div>
             </div>
-        </main>
+        </section>
+
+        <!-- ==================== CATÁLOGO 2: HOGAR ==================== -->
+        <section class="flex flex-col bg-brand-card rounded-xl border border-brand-border overflow-hidden shadow-xl">
+            <div class="p-2.5 sm:p-3 bg-slate-900 border-b border-brand-border flex justify-between items-center gap-1.5">
+                <div class="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-wrap">
+                    <span class="text-xs sm:text-sm font-bold text-amber-400 truncate flex items-center gap-1.5">
+                        <i class="fas fa-home text-amber-400"></i> CATÁLOGO DE HOGAR
+                    </span>
+                    
+                    <div id="badge-hogar" class="hidden items-center gap-1 bg-red-950/90 border border-red-500/60 px-2 py-0.5 rounded-full shrink-0">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                        </span>
+                        <span class="text-[9px] sm:text-xs font-black text-red-200 uppercase tracking-wide">¡NUEVOS!</span>
+                    </div>
+                </div>
+                
+                <a href="Hogar.pdf" target="_blank" class="text-[11px] sm:text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded transition shrink-0">
+                    <i class="fas fa-download mr-1"></i> Descargar PDF
+                </a>
+            </div>
+            
+            <div class="w-full bg-slate-950 flex flex-col p-2 sm:p-4 relative">
+                <!-- PDF Canvas Hogar -->
+                <div class="h-[420px] sm:h-[650px] flex items-center justify-center overflow-hidden relative rounded shadow-2xl bg-slate-900">
+                    <div id="ribbon-hogar" class="page-ribbon-new hidden">NUEVO</div>
+                    <canvas id="canvas-hogar" class="max-h-full max-w-full object-contain"></canvas>
+                </div>
+
+                <!-- Navegación Hogar -->
+                <div class="flex justify-between items-center bg-slate-900 border border-brand-border p-2 rounded-lg my-3">
+                    <button id="prev-hogar" class="bg-slate-800 hover:bg-amber-400 hover:text-black text-slate-200 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                        <i class="fas fa-chevron-left"></i> Anterior
+                    </button>
+                    <span id="num-hogar" class="text-xs text-slate-300 font-medium text-center">Cargando Hogar...</span>
+                    <button id="next-hogar" class="bg-slate-800 hover:bg-amber-400 hover:text-black text-slate-200 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                        Siguiente <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- Productos Hogar -->
+                <div class="bg-slate-900 border border-brand-border p-2.5 sm:p-3 rounded-lg space-y-2">
+                    <div class="flex items-center justify-between border-b border-brand-border/50 pb-2 flex-wrap gap-1">
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fas fa-bolt"></i> Productos en esta página (Hogar):
+                        </span>
+                        <span class="text-[10px] sm:text-[11px] text-slate-400">⚡ Descuento automático (≥3 unid.)</span>
+                    </div>
+                    <div id="list-hogar" class="space-y-2"></div>
+                </div>
+            </div>
+        </section>
+
     </div>
 
-    <!-- BOTÓN FLOTANTE DEL CARRITO -->
+    <!-- BOTÓN FLOTANTE DEL CARRITO GLOBAL -->
     <div class="fixed top-1/2 -translate-y-1/2 right-3 sm:right-4 z-40">
         <button id="floating-cart-btn" class="bg-brand-accent text-black font-bold p-3 sm:p-3.5 rounded-full shadow-2xl border-2 border-slate-900 flex items-center justify-center transition-transform active:scale-95 hover:scale-105">
             <div class="relative">
@@ -218,7 +257,7 @@
         </button>
     </div>
 
-    <!-- Cart Modal -->
+    <!-- Modal Carrito -->
     <div id="cart-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex justify-end">
         <div class="w-full max-w-md bg-brand-card h-full flex flex-col border-l border-brand-border">
             <div class="p-4 border-b border-brand-border flex justify-between items-center">
@@ -239,13 +278,11 @@
                     <input type="text" id="client-name" placeholder="Ej: Plantas Acuáticas / Juan Pérez" class="w-full bg-slate-900 border border-brand-border text-sm rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-accent">
                 </div>
 
-                <!-- Botón Generar Proforma PDF -->
                 <button id="btn-download-proforma" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold py-2.5 rounded-lg border border-brand-border flex items-center justify-center space-x-2 transition text-sm">
                     <i class="fas fa-file-pdf text-red-400"></i>
                     <span id="btn-proforma-text">Descargar Proforma (PDF)</span>
                 </button>
 
-                <!-- Botón Enviar Pedido Directo por WhatsApp -->
                 <button id="btn-whatsapp" class="w-full bg-brand-accent hover:opacity-90 text-black font-bold py-3 rounded-lg flex items-center justify-center space-x-2 transition">
                     <i class="fab fa-whatsapp text-lg"></i>
                     <span>Enviar Pedido por WhatsApp</span>
@@ -257,13 +294,10 @@
     <!-- PLANTILLA PROFORMA PDF -->
     <div class="hidden">
         <div id="proforma-template" class="bg-white text-black font-sans text-xs p-6" style="width: 700px; min-height: 950px; box-sizing: border-box; display: block; margin: 0; padding-top: 15px;">
-            
-            <!-- Banner Cabecera -->
             <div class="w-full mb-4 overflow-hidden rounded">
                 <img src="banner_cabecera.png" alt="Decarbunco Banner" class="w-full h-auto block object-contain">
             </div>
 
-            <!-- Metadatos y Contacto -->
             <div class="flex justify-between items-start border-b border-gray-300 pb-3 mb-4">
                 <div>
                     <p class="text-xs text-gray-700 font-bold">Diseño, Imprimo, Resuelvo.</p>
@@ -277,13 +311,11 @@
                 </div>
             </div>
 
-            <!-- Datos Cliente -->
             <div class="bg-gray-100 p-3 rounded mb-4 border border-gray-200">
                 <h2 class="font-bold text-teal-800 text-[11px] mb-1 uppercase tracking-wider">Datos del Cliente</h2>
                 <p class="text-xs"><span class="font-semibold">Nombre / Empresa:</span> <span id="pdf-client-name">Cliente General</span></p>
             </div>
 
-            <!-- Tabla de Productos -->
             <table class="w-full text-left border-collapse mb-4">
                 <thead>
                     <tr class="bg-teal-700 text-white text-[10px] uppercase">
@@ -294,12 +326,9 @@
                         <th class="p-2 border border-teal-700 text-right">Subtotal</th>
                     </tr>
                 </thead>
-                <tbody id="pdf-products-body" class="divide-y divide-gray-200">
-                    <!-- Productos inyectados por JS -->
-                </tbody>
+                <tbody id="pdf-products-body" class="divide-y divide-gray-200"></tbody>
             </table>
 
-            <!-- Totales -->
             <div class="flex justify-end mb-5">
                 <div class="w-1/2 bg-gray-50 p-3 rounded border border-gray-200 space-y-1.5 text-xs">
                     <div class="flex justify-between"><span class="font-semibold">Subtotal:</span><span id="pdf-subtotal">$0.00</span></div>
@@ -308,14 +337,12 @@
                 </div>
             </div>
 
-            <!-- Condiciones Comerciales -->
             <div class="bg-gray-50 p-4 rounded border border-gray-200 text-[10px] text-gray-700 mb-6 block overflow-visible">
                 <h3 class="font-bold text-teal-800 text-[11px] uppercase mb-1.5">Condiciones Comerciales</h3>
                 <p class="mb-1">• <strong>Forma de pago:</strong> 50% de anticipo para iniciar producción, 50% contra entrega.</p>
                 <p class="mb-0">• <strong>Tiempo de entrega estimado:</strong> 3 a 7 días hábiles según volumen desde la confirmación del anticipo.</p>
             </div>
 
-            <!-- Firma Electrónica -->
             <div class="mt-8 flex flex-col items-center justify-center">
                 <div class="mb-1">
                     <img src="FIRMA ELECTRONICA.png" alt="Firma Electrónica Diego Cuyago" class="h-12 object-contain mx-auto">
@@ -334,97 +361,113 @@
         let cart = {};
         let toastTimeout;
 
-        // Cargar productos desde productos.json
+        // Cargar productos desde AMBOS archivos JSON independientes
         async function loadProducts() {
             try {
-                const response = await fetch('productos.json');
-                PRODUCTS = await response.json();
+                const [resAcuario, resHogar] = await Promise.all([
+                    fetch('productos_acuario.json').then(r => r.ok ? r.json() : []),
+                    fetch('productos_hogar.json').then(r => r.ok ? r.json() : [])
+                ]);
+
+                // Asignar el catálogo por defecto si no lo tienen y unir ambos arreglos
+                const acuarioProds = resAcuario.map(p => ({ ...p, catalog: p.catalog || 'acuario' }));
+                const hogarProds = resHogar.map(p => ({ ...p, catalog: p.catalog || 'hogar' }));
+
+                PRODUCTS = [...acuarioProds, ...hogarProds];
                 
-                checkNewProductsBadge();
-                renderPageProducts(pageNum);
+                checkBadges();
+                renderCatalog('acuario');
+                renderCatalog('hogar');
             } catch (error) {
-                console.error("Error al cargar productos.json:", error);
+                console.error("Error al cargar los archivos JSON:", error);
             }
         }
 
-        function checkNewProductsBadge() {
-            const hasNewProducts = PRODUCTS.some(p => p.isNew === true);
-            const badge = document.getElementById('new-items-badge');
-            if (hasNewProducts && badge) {
-                badge.classList.remove('hidden');
-                badge.classList.add('flex');
-            }
+        function checkBadges() {
+            const hasNewAcuario = PRODUCTS.some(p => p.catalog === 'acuario' && p.isNew);
+            const hasNewHogar = PRODUCTS.some(p => p.catalog === 'hogar' && p.isNew);
+
+            const badgeAcuario = document.getElementById('badge-acuario');
+            const badgeHogar = document.getElementById('badge-hogar');
+
+            if (hasNewAcuario && badgeAcuario) badgeAcuario.classList.replace('hidden', 'flex');
+            if (hasNewHogar && badgeHogar) badgeHogar.classList.replace('hidden', 'flex');
         }
 
-        // Visor interactivo PDF
-        const pdfUrl = 'Acuario.pdf';
-        let pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null, scale = 1.8,
-            canvas = document.getElementById('pdf-canvas'), ctx = canvas.getContext('2d');
+        // CONTROLADOR DE PDFs INDEPENDIENTES
+        const catalogs = {
+            acuario: { url: 'Acuario.pdf', doc: null, page: 1, rendering: false, pending: null, canvasId: 'canvas-acuario', numId: 'num-acuario', listId: 'list-acuario', ribbonId: 'ribbon-acuario' },
+            hogar:   { url: 'Hogar.pdf',   doc: null, page: 1, rendering: false, pending: null, canvasId: 'canvas-hogar',   numId: 'num-hogar',   listId: 'list-hogar', ribbonId: 'ribbon-hogar' }
+        };
 
-        function renderPage(num) {
-            pageRendering = true;
-            pdfDoc.getPage(num).then(function(page) {
-                const viewport = page.getViewport({scale: scale});
+        function renderPDFPage(key, num) {
+            const cat = catalogs[key];
+            if (!cat.doc) return;
+            
+            cat.rendering = true;
+            cat.doc.getPage(num).then(function(page) {
+                const canvas = document.getElementById(cat.canvasId);
+                const ctx = canvas.getContext('2d');
+                const viewport = page.getViewport({ scale: 1.8 });
+                
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
 
-                const renderContext = { canvasContext: ctx, viewport: viewport };
-                const renderTask = page.render(renderContext);
-
+                const renderTask = page.render({ canvasContext: ctx, viewport: viewport });
                 renderTask.promise.then(function() {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
+                    cat.rendering = false;
+                    if (cat.pending !== null) {
+                        renderPDFPage(key, cat.pending);
+                        cat.pending = null;
                     }
                 });
             });
-            document.getElementById('page-num').textContent = `Pág. ${num} de ${pdfDoc.numPages}`;
-            renderPageProducts(num);
+
+            document.getElementById(cat.numId).textContent = `Pág. ${num} de ${cat.doc.numPages}`;
+            renderCatalog(key);
         }
 
-        function queueRenderPage(num) {
-            if (pageRendering) pageNumPending = num;
-            else renderPage(num);
+        function queueRenderPDF(key, num) {
+            const cat = catalogs[key];
+            if (cat.rendering) cat.pending = num;
+            else renderPDFPage(key, num);
         }
 
-        document.getElementById('prev-page').addEventListener('click', () => {
-            if (pageNum <= 1) return;
-            pageNum--;
-            queueRenderPage(pageNum);
-        });
+        function initPDF(key) {
+            const cat = catalogs[key];
+            pdfjsLib.getDocument(cat.url).promise.then(function(pdfDoc_) {
+                cat.doc = pdfDoc_;
+                document.getElementById(cat.numId).textContent = `Pág. ${cat.page} de ${cat.doc.numPages}`;
+                renderPDFPage(key, cat.page);
+            }).catch(err => {
+                document.getElementById(cat.numId).textContent = `Error al cargar ${key}`;
+            });
+        }
 
-        document.getElementById('next-page').addEventListener('click', () => {
-            if (pageNum >= pdfDoc.numPages) return;
-            pageNum++;
-            queueRenderPage(pageNum);
-        });
+        // Listeners Botones
+        document.getElementById('prev-acuario').addEventListener('click', () => { if (catalogs.acuario.page > 1) { catalogs.acuario.page--; queueRenderPDF('acuario', catalogs.acuario.page); } });
+        document.getElementById('next-acuario').addEventListener('click', () => { if (catalogs.acuario.doc && catalogs.acuario.page < catalogs.acuario.doc.numPages) { catalogs.acuario.page++; queueRenderPDF('acuario', catalogs.acuario.page); } });
 
-        pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
-            pdfDoc = pdfDoc_;
-            document.getElementById('page-num').textContent = `Pág. ${pageNum} de ${pdfDoc.numPages}`;
-            renderPage(pageNum);
-        });
+        document.getElementById('prev-hogar').addEventListener('click', () => { if (catalogs.hogar.page > 1) { catalogs.hogar.page--; queueRenderPDF('hogar', catalogs.hogar.page); } });
+        document.getElementById('next-hogar').addEventListener('click', () => { if (catalogs.hogar.doc && catalogs.hogar.page < catalogs.hogar.doc.numPages) { catalogs.hogar.page++; queueRenderPDF('hogar', catalogs.hogar.page); } });
 
-        // Renderizar productos de la página actual con alineamiento armónico
-        function renderPageProducts(currentPage) {
-            const container = document.getElementById('page-products-list');
-            const pageRibbon = document.getElementById('page-new-ribbon');
-            if (!container) return;
-            container.innerHTML = '';
+        // Renderizar Lista de Productos por Catálogo
+        function renderCatalog(key) {
+            const cat = catalogs[key];
+            const listContainer = document.getElementById(key === 'acuario' ? 'list-acuario' : 'list-hogar');
+            const ribbon = document.getElementById(cat.ribbonId);
+            if (!listContainer) return;
+            
+            listContainer.innerHTML = '';
 
-            const pageProds = PRODUCTS.filter(p => p.page === currentPage);
-            const hasNewInThisPage = pageProds.some(p => p.isNew === true);
+            const pageProds = PRODUCTS.filter(p => p.catalog === key && p.page === cat.page);
 
-            // Mostrar u ocultar la banderilla en la esquina de la hoja/imagen
-            if (hasNewInThisPage && pageRibbon) {
-                pageRibbon.classList.remove('hidden');
-            } else if (pageRibbon) {
-                pageRibbon.classList.add('hidden');
-            }
+            const hasNewInPage = pageProds.some(p => p.isNew);
+            if (hasNewInPage && ribbon) ribbon.classList.remove('hidden');
+            else if (ribbon) ribbon.classList.add('hidden');
 
             if (pageProds.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-400 italic py-1">No hay productos vinculados en esta página.</p>';
+                listContainer.innerHTML = '<p class="text-xs text-slate-400 italic py-1">No hay productos vinculados en esta página.</p>';
                 return;
             }
 
@@ -433,15 +476,12 @@
                 card.className = 'bg-brand-card border border-brand-border rounded-lg p-2.5 flex items-center justify-between gap-2.5';
                 card.innerHTML = `
                     <div class="flex-1 min-w-0 pr-1">
-                        <div class="font-medium text-xs text-slate-100 truncate" title="${p.name}">
-                            ${p.name}
-                        </div>
+                        <div class="font-medium text-xs text-slate-100 truncate" title="${p.name}">${p.name}</div>
                         <div class="text-[11px] text-slate-400 mt-0.5 truncate">
                             P.U: <span class="text-slate-200 font-semibold">$${p.price.toFixed(2)}</span>
                             ${p.price !== p.wholesalePrice ? `<span class="text-brand-accent ml-1">(≥3: $${p.wholesalePrice.toFixed(2)})</span>` : ''}
                         </div>
                     </div>
-                    
                     <div class="flex items-center gap-1.5 shrink-0">
                         ${p.tiktok ? `
                             <a href="${p.tiktok}" target="_blank" class="bg-black hover:bg-slate-900 text-white border border-slate-700 px-2 py-1.5 rounded text-xs font-semibold transition flex items-center gap-1 shrink-0" title="Ver en TikTok">
@@ -449,14 +489,12 @@
                                 <span class="hidden sm:inline">TikTok</span>
                             </a>
                         ` : ''}
-                        
                         <button onclick="addToCart(${p.id})" class="bg-brand-accent hover:opacity-90 text-black px-2.5 py-1.5 rounded text-xs font-bold transition flex items-center gap-1 shrink-0">
-                            <i class="fas fa-plus"></i>
-                            <span>Añadir</span>
+                            <i class="fas fa-plus"></i> <span>Añadir</span>
                         </button>
                     </div>
                 `;
-                container.appendChild(card);
+                listContainer.appendChild(card);
             });
         }
 
@@ -477,11 +515,8 @@
         function showToast() {
             const toast = document.getElementById('cart-toast');
             toast.classList.remove('hidden');
-            
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3500);
+            toastTimeout = setTimeout(() => toast.classList.add('hidden'), 3500);
         }
 
         function updateCart() {
@@ -495,6 +530,8 @@
 
             Object.keys(cart).forEach(id => {
                 const p = PRODUCTS.find(prod => prod.id == id);
+                if (!p) return;
+                
                 const qty = cart[id];
                 const isWholesale = qty >= 3 && p.price !== p.wholesalePrice;
                 const activePrice = isWholesale ? p.wholesalePrice : p.price;
@@ -525,24 +562,20 @@
             if (count === 0) cartItems.innerHTML = '<p class="text-center text-slate-500 text-sm py-8">El carrito está vacío</p>';
 
             floatingCartCount.textContent = count;
-
             floatingCartBtn.classList.add('animate-pop');
             setTimeout(() => floatingCartBtn.classList.remove('animate-pop'), 300);
-
             cartSubtotal.textContent = `$${total.toFixed(2)}`;
         }
 
-        // Eventos de apertura de Carrito
         const openModal = () => document.getElementById('cart-modal').classList.remove('hidden');
         document.getElementById('floating-cart-btn').addEventListener('click', openModal);
         document.getElementById('toast-open-cart').addEventListener('click', openModal);
-        
         document.getElementById('cart-close').addEventListener('click', () => document.getElementById('cart-modal').classList.add('hidden'));
 
-        // DESCARGA LIMPIA DE PROFORMA PDF
+        // Generar Proforma PDF
         document.getElementById('btn-download-proforma').addEventListener('click', () => {
             if (Object.keys(cart).length === 0) {
-                alert('El carrito está vacío. Agrega productos para generar la proforma.');
+                alert('El carrito está vacío.');
                 return;
             }
 
@@ -561,11 +594,12 @@
 
             const tableBody = document.getElementById('pdf-products-body');
             tableBody.innerHTML = '';
-            
             let subtotal = 0;
 
             Object.keys(cart).forEach(id => {
                 const p = PRODUCTS.find(prod => prod.id == id);
+                if (!p) return;
+
                 const qty = cart[id];
                 const isWholesale = qty >= 3 && p.price !== p.wholesalePrice;
                 const activePrice = isWholesale ? p.wholesalePrice : p.price;
@@ -592,7 +626,6 @@
             document.getElementById('pdf-total').textContent = `$${total.toFixed(2)}`;
 
             const element = document.getElementById('proforma-template');
-            
             const opt = {
                 margin:       [0.3, 0.4, 0.3, 0.4],
                 filename:     `Proforma_${formattedProformaNum}_Decarbunco3D.pdf`,
@@ -606,7 +639,7 @@
             });
         });
 
-        // ENVIAR PEDIDO POR WHATSAPP
+        // WhatsApp
         document.getElementById('btn-whatsapp').addEventListener('click', () => {
             const name = document.getElementById('client-name').value.trim();
             if (Object.keys(cart).length === 0) {
@@ -621,6 +654,8 @@
             let subtotal = 0;
             Object.keys(cart).forEach(id => {
                 const p = PRODUCTS.find(prod => prod.id == id);
+                if (!p) return;
+
                 const qty = cart[id];
                 const isWholesale = qty >= 3 && p.price !== p.wholesalePrice;
                 const activePrice = isWholesale ? p.wholesalePrice : p.price;
@@ -639,12 +674,13 @@
             msg += `*TOTAL A PAGAR:* $${total.toFixed(2)}\n\n`;
             msg += `_Solicitante requiere confirmación para inicio de producción._`;
 
-            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-            window.open(url, '_blank');
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
         });
 
         // Inicializar
         loadProducts();
+        initPDF('acuario');
+        initPDF('hogar');
     </script>
 </body>
 </html>
