@@ -12,8 +12,8 @@
   { "id": 11, "name": "Mini Maceta Flotante", "category": "Accesorios", "price": 0.90, "wholesalePrice": 0.70,"isNew": false, "page": 12 },
   { "id": 12, "name": "Macetero Acuático (GRANDE)", "category": "Especiales", "price": 5.75, "wholesalePrice": 4.75,"isNew": false, "page": 13 },
   { "id": 13, "name": "Macetero Acuático (PEQUEÑO)", "category": "Especiales", "price": 3.30, "wholesalePrice": 2.80,"isNew": false, "page": 14 },
-  { "id": 14, "name": "Ventosa (PEQUEÑO)", "category": "Especiales", "price": 0.05, "wholesalePrice": 0.05,"isNew": true, "page": 15 },
-  { "id": 15, "name": "Ventosa (MEDIANA)", "category": "Especiales", "price": 0.10, "wholesalePrice": 0.10,"isNew": true, "page": 16 },
-  { "id": 16, "name": "Ventosa Acuático (GRANDE)", "category": "Especiales", "price": 0.15, "wholesalePrice": 0.15,"isNew": true, "page": 17 },
+  { "id": 14, "name": "Ventosa (PEQUEÑO)", "category": "Especiales", "price": 0.05, "wholesalePrice": 0.05,"isNew": false, "page": 15 },
+  { "id": 15, "name": "Ventosa (MEDIANA)", "category": "Especiales", "price": 0.10, "wholesalePrice": 0.10,"isNew": false, "page": 16 },
+  { "id": 16, "name": "Ventosa Acuático (GRANDE)", "category": "Especiales", "price": 0.15, "wholesalePrice": 0.15,"isNew": false, "page": 17 },
   { "id": 17, "name": "Pegamento Especial Microbe-Lift (50ml)", "category": "Especiales", "price": 30.00, "wholesalePrice": 30.00,"isNew": false, "page": 18 }
 ]
