@@ -361,15 +361,16 @@
         let cart = {};
         let toastTimeout;
 
-        // Cargar productos desde AMBOS archivos JSON independientes
+        // Cargar productos desde AMBOS archivos JSON independientes forzando la actualización de caché
         async function loadProducts() {
             try {
+                const timestamp = new Date().getTime();
                 const [resAcuario, resHogar] = await Promise.all([
-                    fetch('productos_acuario.json').then(r => r.ok ? r.json() : []),
-                    fetch('productos_hogar.json').then(r => r.ok ? r.json() : [])
+                    fetch(`productos_acuario.json?v=${timestamp}`).then(r => r.ok ? r.json() : []),
+                    fetch(`productos_hogar.json?v=${timestamp}`).then(r => r.ok ? r.json() : [])
                 ]);
 
-                // Asignar el catálogo por defecto si no lo tienen y unir ambos arreglos
+                // Asignar el catálogo correspondiente si no lo tienen y unir ambos arreglos
                 const acuarioProds = resAcuario.map(p => ({ ...p, catalog: p.catalog || 'acuario' }));
                 const hogarProds = resHogar.map(p => ({ ...p, catalog: p.catalog || 'hogar' }));
 
@@ -384,14 +385,21 @@
         }
 
         function checkBadges() {
-            const hasNewAcuario = PRODUCTS.some(p => p.catalog === 'acuario' && p.isNew);
-            const hasNewHogar = PRODUCTS.some(p => p.catalog === 'hogar' && p.isNew);
+            const hasNewAcuario = PRODUCTS.some(p => p.catalog === 'acuario' && p.isNew === true);
+            const hasNewHogar = PRODUCTS.some(p => p.catalog === 'hogar' && p.isNew === true);
 
             const badgeAcuario = document.getElementById('badge-acuario');
             const badgeHogar = document.getElementById('badge-hogar');
 
-            if (hasNewAcuario && badgeAcuario) badgeAcuario.classList.replace('hidden', 'flex');
-            if (hasNewHogar && badgeHogar) badgeHogar.classList.replace('hidden', 'flex');
+            if (badgeAcuario) {
+                if (hasNewAcuario) badgeAcuario.classList.replace('hidden', 'flex');
+                else badgeAcuario.classList.replace('flex', 'hidden');
+            }
+
+            if (badgeHogar) {
+                if (hasNewHogar) badgeHogar.classList.replace('hidden', 'flex');
+                else badgeHogar.classList.replace('flex', 'hidden');
+            }
         }
 
         // CONTROLADOR DE PDFs INDEPENDIENTES
@@ -462,7 +470,7 @@
 
             const pageProds = PRODUCTS.filter(p => p.catalog === key && p.page === cat.page);
 
-            const hasNewInPage = pageProds.some(p => p.isNew);
+            const hasNewInPage = pageProds.some(p => p.isNew === true);
             if (hasNewInPage && ribbon) ribbon.classList.remove('hidden');
             else if (ribbon) ribbon.classList.add('hidden');
 
@@ -531,7 +539,7 @@
             Object.keys(cart).forEach(id => {
                 const p = PRODUCTS.find(prod => prod.id == id);
                 if (!p) return;
-                
+
                 const qty = cart[id];
                 const isWholesale = qty >= 3 && p.price !== p.wholesalePrice;
                 const activePrice = isWholesale ? p.wholesalePrice : p.price;
