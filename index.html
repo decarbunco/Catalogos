@@ -401,7 +401,7 @@
             }
         }
 
-        // CONTROLADOR DE PDFs INDEPENDIENTES (RUTAS LIMPIAS Y DIRECTAS)
+        // CONTROLADOR DE PDFs INDEPENDIENTES CON RESPALDO
         const catalogs = {
             acuario: { url: 'Acuario.pdf', doc: null, page: 1, rendering: false, pending: null, canvasId: 'canvas-acuario', numId: 'num-acuario', listId: 'list-acuario', ribbonId: 'ribbon-acuario' },
             hogar:   { url: 'Hogar.pdf',   doc: null, page: 1, rendering: false, pending: null, canvasId: 'canvas-hogar',   numId: 'num-hogar',   listId: 'list-hogar', ribbonId: 'ribbon-hogar' }
@@ -443,14 +443,23 @@
         function initPDF(key) {
             const cat = catalogs[key];
             
-            // Carga directa y limpia del archivo PDF
+            // Intenta cargar con el nombre original (ej: Hogar.pdf)
             pdfjsLib.getDocument(cat.url).promise.then(function(pdfDoc_) {
                 cat.doc = pdfDoc_;
                 document.getElementById(cat.numId).textContent = `Pág. ${cat.page} de ${cat.doc.numPages}`;
                 renderPDFPage(key, cat.page);
             }).catch(err => {
-                console.error(`Error al cargar ${cat.url}:`, err);
-                document.getElementById(cat.numId).textContent = `Error al cargar ${key}`;
+                console.warn(`No se encontró ${cat.url}, probando respaldo en minúsculas...`);
+                // Si falla por caché/sensibilidad de mayúsculas, intenta con minúsculas
+                const altUrl = cat.url.toLowerCase();
+                pdfjsLib.getDocument(altUrl).promise.then(function(pdfDoc_) {
+                    cat.doc = pdfDoc_;
+                    document.getElementById(cat.numId).textContent = `Pág. ${cat.page} de ${cat.doc.numPages}`;
+                    renderPDFPage(key, cat.page);
+                }).catch(err2 => {
+                    console.error(`Error definitivo al cargar ${key}:`, err2);
+                    document.getElementById(cat.numId).textContent = `Error al cargar ${key}`;
+                });
             });
         }
 
