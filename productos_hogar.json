@@ -6,6 +6,14 @@
     "name": "Catálogo Hogar - Portada",
     "isNew": true,
     "tiktok": ""
+  },
+  {
+    "id": 102,
+    "catalog": "hogar",
+    "page": 2,
+    "name": "Catálogo Hogar - Portada",
+    "isNew": false,
+    "tiktok": ""
   }
 
   
