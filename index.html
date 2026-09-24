@@ -6,7 +6,7 @@
     <title>Decarbunco 3D - Catálogos Interactivos</title>
 
     <!-- Iconos para Pantalla de Inicio / Acceso Directo Móvil -->
-    <link rel="apple-touch-icon" sizes="180x180" href="SoloLogo.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="SoloLogo.png">
     <link rel="icon" type="image/png" sizes="32x32" href="SoloLogo.png">
     <link rel="icon" type="image/png" sizes="16x16" href="SoloLogo.png">
     
@@ -227,7 +227,6 @@
                         <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
                             <i class="fas fa-bolt"></i> Productos en esta página (Hogar):
                         </span>
-                        <!-- TEXTO ACTUALIZADO AQUÍ -->
                         <span class="text-[10px] sm:text-[11px] text-slate-400">⚡ Encuentra tu producto al mejor precio</span>
                     </div>
                     <div id="list-hogar" class="space-y-2"></div>
@@ -402,7 +401,7 @@
             }
         }
 
-        // CONTROLADOR DE PDFs INDEPENDIENTES (RUTAS EXACTAS CON MAYÚSCULAS)
+        // CONTROLADOR DE PDFs INDEPENDIENTES (RUTAS LIMPIAS Y DIRECTAS)
         const catalogs = {
             acuario: { url: 'Acuario.pdf', doc: null, page: 1, rendering: false, pending: null, canvasId: 'canvas-acuario', numId: 'num-acuario', listId: 'list-acuario', ribbonId: 'ribbon-acuario' },
             hogar:   { url: 'Hogar.pdf',   doc: null, page: 1, rendering: false, pending: null, canvasId: 'canvas-hogar',   numId: 'num-hogar',   listId: 'list-hogar', ribbonId: 'ribbon-hogar' }
@@ -443,10 +442,9 @@
 
         function initPDF(key) {
             const cat = catalogs[key];
-            const timestamp = new Date().getTime();
             
-            // Forzar actualización de caché también para el PDF
-            pdfjsLib.getDocument(`${cat.url}?v=${timestamp}`).promise.then(function(pdfDoc_) {
+            // Carga directa y limpia del archivo PDF
+            pdfjsLib.getDocument(cat.url).promise.then(function(pdfDoc_) {
                 cat.doc = pdfDoc_;
                 document.getElementById(cat.numId).textContent = `Pág. ${cat.page} de ${cat.doc.numPages}`;
                 renderPDFPage(key, cat.page);
