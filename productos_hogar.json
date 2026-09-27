@@ -7,6 +7,17 @@
     "category": "Especiales",
     "price": 4.50,
     "wholesalePrice": 4.50,
+    "isNew": false,
+    "tiktok": ""
+  },
+   {
+    "id": 103,
+    "catalog": "hogar",
+    "page": 3,
+    "name": "Maceteros Sonrisas de Jardín",
+    "category": "Especiales",
+    "price": 3.65,
+    "wholesalePrice": 10.00,
     "isNew": true,
     "tiktok": ""
   }
