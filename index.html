@@ -337,7 +337,8 @@
                 </div>
             </div>
 
-          <div class="bg-gray-50 p-4 rounded border border-gray-200 text-[10px] text-gray-700 mb-6 block overflow-visible space-y-1">
+            <!-- CONDICIONES COMERCIALES ACTUALIZADAS CON TUS CONDICIONES DE ENVÍO -->
+            <div class="bg-gray-50 p-4 rounded border border-gray-200 text-[10px] text-gray-700 mb-6 block overflow-visible space-y-1">
                 <h3 class="font-bold text-teal-800 text-[11px] uppercase mb-1.5">Condiciones Comerciales</h3>
                 <p>• <strong>Forma de pago:</strong> 50% de anticipo para iniciar producción, 50% contra entrega.</p>
                 <p>• <strong>Tiempo de entrega estimado:</strong> 3 a 7 días hábiles según volumen desde la confirmación del anticipo.</p>
@@ -513,12 +514,18 @@
             pageProds.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'bg-brand-card border border-brand-border rounded-lg p-2.5 flex items-center justify-between gap-2.5';
+                
+                const hasPrice = typeof p.price === 'number';
+                const priceFormatted = hasPrice ? p.price.toFixed(2) : '0.00';
+                const wholesaleFormatted = (typeof p.wholesalePrice === 'number') ? p.wholesalePrice.toFixed(2) : priceFormatted;
+                const showWholesale = hasPrice && p.price !== p.wholesalePrice;
+
                 card.innerHTML = `
                     <div class="flex-1 min-w-0 pr-1">
                         <div class="font-medium text-xs text-slate-100 truncate" title="${p.name}">${p.name}</div>
                         <div class="text-[11px] text-slate-400 mt-0.5 truncate">
-                            P.U: <span class="text-slate-200 font-semibold">$${p.price.toFixed(2)}</span>
-                            ${p.price !== p.wholesalePrice ? `<span class="text-brand-accent ml-1">(≥3: $${p.wholesalePrice.toFixed(2)})</span>` : ''}
+                            P.U: <span class="text-slate-200 font-semibold">$${priceFormatted}</span>
+                            ${showWholesale ? `<span class="text-brand-accent ml-1">(≥3: $${wholesaleFormatted})</span>` : ''}
                         </div>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
@@ -572,8 +579,10 @@
                 if (!p) return;
 
                 const qty = cart[id];
-                const isWholesale = qty >= 3 && p.price !== p.wholesalePrice;
-                const activePrice = isWholesale ? p.wholesalePrice : p.price;
+                const price = typeof p.price === 'number' ? p.price : 0;
+                const wholesale = typeof p.wholesalePrice === 'number' ? p.wholesalePrice : price;
+                const isWholesale = qty >= 3 && price !== wholesale;
+                const activePrice = isWholesale ? wholesale : price;
                 const sub = activePrice * qty;
                 
                 total += sub;
@@ -640,8 +649,10 @@
                 if (!p) return;
 
                 const qty = cart[id];
-                const isWholesale = qty >= 3 && p.price !== p.wholesalePrice;
-                const activePrice = isWholesale ? p.wholesalePrice : p.price;
+                const price = typeof p.price === 'number' ? p.price : 0;
+                const wholesale = typeof p.wholesalePrice === 'number' ? p.wholesalePrice : price;
+                const isWholesale = qty >= 3 && price !== wholesale;
+                const activePrice = isWholesale ? wholesale : price;
                 const itemSubtotal = activePrice * qty;
                 subtotal += itemSubtotal;
 
@@ -696,8 +707,10 @@
                 if (!p) return;
 
                 const qty = cart[id];
-                const isWholesale = qty >= 3 && p.price !== p.wholesalePrice;
-                const activePrice = isWholesale ? p.wholesalePrice : p.price;
+                const price = typeof p.price === 'number' ? p.price : 0;
+                const wholesale = typeof p.wholesalePrice === 'number' ? p.wholesalePrice : price;
+                const isWholesale = qty >= 3 && price !== wholesale;
+                const activePrice = isWholesale ? wholesale : price;
                 const itemSub = activePrice * qty;
                 subtotal += itemSub;
 
