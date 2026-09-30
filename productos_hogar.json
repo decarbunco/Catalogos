@@ -14,6 +14,17 @@
     "id": 103,
     "catalog": "hogar",
     "page": 3,
+    "name": "Porta esponja de acero Patricio Estrella",
+    "category": "Especiales",
+    "price": 3.75,
+    "wholesalePrice": 3.75,
+    "isNew": true,
+    "tiktok": ""
+  },
+   {
+    "id": 104,
+    "catalog": "hogar",
+    "page": 4,
     "name": "Maceteros Sonrisas de Jardín",
     "category": "Especiales",
     "price": 3.65,
